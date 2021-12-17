@@ -1,0 +1,7 @@
+title New note
+
+User->Browser: Submits the content of the note
+Browser->Server: Post new note 
+Server->Browser: Redirect to /notes
+Browser->User: Updates the view to show the new note
+

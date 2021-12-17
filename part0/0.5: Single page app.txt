@@ -1,0 +1,12 @@
+title Single page app
+
+Browser->Server: GET: spa document from https://studies.cs.helsinki.fi/exampleapp/spa
+Server-->Browser: HTML document
+Browser->Server: GET: css from https://studies.cs.helsinki.fi/exampleapp/main.css
+Server-->Browser: CSS file
+Browser->Server: GET: spa.js from https://studies.cs.helsinki.fi/exampleapp/spa.js
+Server-->Browser: JS file
+Browser->Server: GET: spa.js from https://studies.cs.helsinki.fi/exampleapp/data.json
+Server-->Browser: json file gotten from the js file
+
+
