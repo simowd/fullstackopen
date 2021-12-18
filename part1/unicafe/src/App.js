@@ -12,36 +12,41 @@ const Button = ({ value, setValue, name }) => {
     );
 };
 
-const StatisticLine = ({text, value}) => (
-  <div>
-    <p>{text} {value}</p>
-  </div>
-)
+const StatisticLine = ({ text, value }) => (
+    <tr>
+        <td>{text}</td>
+        <td>{value}</td>
+    </tr>
+);
 
-const Statistics = ({feedback}) => {
-  const calculateAll = () => feedback.good + feedback.neutral + feedback.bad
+const Statistics = ({ feedback }) => {
+    const calculateAll = () => feedback.good + feedback.neutral + feedback.bad;
 
-  const calculateAverage = () => {
-    let total = feedback.good - feedback.bad
-    return total/calculateAll()
-  }
-  if(feedback.good === 0 && feedback.neutral === 0 && feedback.bad === 0){
-    return(
-      <div>
-        <p>No feedback given</p>
-      </div>
-    )
-  }
-  return(
-    <div>
-      <StatisticLine text="good" value={feedback.good}/>
-      <StatisticLine text="neutral" value={feedback.neutral}/>
-      <StatisticLine text="bad" value={feedback.bad}/>
-      <StatisticLine text="all" value={calculateAll()}/>
-      <StatisticLine text="average" value={calculateAverage()}/>
-    </div>
-  )
-}
+    const calculateAverage = () => {
+        let total = feedback.good - feedback.bad;
+        return total / calculateAll();
+    };
+    if (feedback.good === 0 && feedback.neutral === 0 && feedback.bad === 0) {
+        return (
+            <div>
+                <p>No feedback given</p>
+            </div>
+        );
+    }
+    return (
+        <div>
+            <table>
+                <tbody>
+                    <StatisticLine text="good" value={feedback.good} />
+                    <StatisticLine text="neutral" value={feedback.neutral} />
+                    <StatisticLine text="bad" value={feedback.bad} />
+                    <StatisticLine text="all" value={calculateAll()} />
+                    <StatisticLine text="average" value={calculateAverage()} />
+                </tbody>
+            </table>
+        </div>
+    );
+};
 
 const App = () => {
     // save clicks of each button to its own state
@@ -52,11 +57,11 @@ const App = () => {
     return (
         <div>
             <h1>give feedback</h1>
-                <Button value={good} setValue={setGood} name="good" />
-                <Button value={neutral} setValue={setNeutral} name="neutral" />
-                <Button value={bad} setValue={setBad} name="bad" />
-              <h1>statistics</h1>
-            <Statistics feedback={{good:good,neutral:neutral,bad:bad}}/>
+            <Button value={good} setValue={setGood} name="good" />
+            <Button value={neutral} setValue={setNeutral} name="neutral" />
+            <Button value={bad} setValue={setBad} name="bad" />
+            <h1>statistics</h1>
+            <Statistics feedback={{ good: good, neutral: neutral, bad: bad }} />
         </div>
     );
 };
