@@ -12,6 +12,12 @@ const Button = ({ value, setValue, name }) => {
     );
 };
 
+const StatisticLine = ({text, value}) => (
+  <div>
+    <p>{text} {value}</p>
+  </div>
+)
+
 const Statistics = ({feedback}) => {
   const calculateAll = () => feedback.good + feedback.neutral + feedback.bad
 
@@ -28,11 +34,11 @@ const Statistics = ({feedback}) => {
   }
   return(
     <div>
-      <p> good {feedback.good}</p>
-      <p> neutral {feedback.neutral}</p>
-      <p> bad {feedback.bad}</p>
-      <p> all {calculateAll()}</p>
-      <p> average {calculateAverage()}%</p>
+      <StatisticLine text="good" value={feedback.good}/>
+      <StatisticLine text="neutral" value={feedback.neutral}/>
+      <StatisticLine text="bad" value={feedback.bad}/>
+      <StatisticLine text="all" value={calculateAll()}/>
+      <StatisticLine text="average" value={calculateAverage()}/>
     </div>
   )
 }
