@@ -13,11 +13,20 @@ const Button = ({ value, setValue, name }) => {
 };
 
 const Content = ({feedback}) => {
+  const calculateAll = () => feedback.good + feedback.neutral + feedback.bad
+
+  const calculateAverage = () => {
+    let total = feedback.good - feedback.bad
+    return total/calculateAll()
+  }
+
   return(
     <div>
       <p> good {feedback.good}</p>
       <p> neutral {feedback.neutral}</p>
       <p> bad {feedback.bad}</p>
+      <p> all {calculateAll()}</p>
+      <p> average {calculateAverage()}%</p>
     </div>
   )
 }
