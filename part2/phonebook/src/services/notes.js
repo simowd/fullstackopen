@@ -12,8 +12,13 @@ const addNew = (newContact) => {
 };
 
 const deleteNumber = (id) => {
-    const request = axios.delete(baseUrl+`/${id}`);
+    const request = axios.delete(baseUrl + `/${id}`);
     return request.then((response) => response.data);
-}
+};
 
-export default { getAll, addNew, deleteNumber };
+const changeNumber = (contact) => {
+    const request = axios.put(baseUrl + `/${contact.id}`, contact);
+    return request.then((response) => response.data);
+};
+
+export default { getAll, addNew, deleteNumber, changeNumber };

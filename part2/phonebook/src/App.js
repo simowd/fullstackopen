@@ -12,13 +12,13 @@ const Filter = ({ filter, handleFilter }) => {
     );
 };
 
-const Person = ({ person, persons, setPersons }) => {
+const Person = ({ person, handleDelete }) => {
     const deleteHandler = () => {
         const message = `Do you wish to delete ${person.name}`;
         const result = window.confirm(message);
         if (result) {
             noteService.deleteNumber(person.id).then((response) => {
-                setPersons(persons.filter((p) => p.id !== person.id))
+                handleDelete(person.id);
             });
         }
     };
@@ -33,11 +33,15 @@ const Person = ({ person, persons, setPersons }) => {
     );
 };
 
-const Persons = ({ persons, list, setPersons }) => {
+const Persons = ({ persons, handleDelete }) => {
     return (
         <>
             {persons.map((person) => (
-                <Person person={person} key={person.id} persons={list} setPersons={setPersons}/>
+                <Person
+                    person={person}
+                    key={person.id}
+                    handleDelete={handleDelete}
+                />
             ))}
         </>
     );
@@ -103,14 +107,27 @@ const App = () => {
     const addNewEntry = (event) => {
         event.preventDefault();
         const lastId = persons[persons.length - 1].id + 1;
-        const nameObject = {
+        let nameObject = {
             name: newName,
             number: newNumber,
             id: lastId,
         };
 
         if (persons.map((person) => person.name).includes(newName)) {
-            alert(`${newName} is already add to phonebook`);
+            const state = window.confirm(
+                `${newName} is already add to phonebook, update new number?`
+            );
+            if (state) {
+                const index = persons.map((person) => person.name).findIndex((e) => e === newName);
+                nameObject.id = persons[index].id;
+                noteService.changeNumber(nameObject).then((response) => {
+                    setPersons(
+                        persons.map((p) =>
+                            p.id === response.id ? response : p
+                        )
+                    );
+                });
+            }
         } else {
             noteService.addNew(nameObject).then((response) => {
                 setPersons(persons.concat(response));
@@ -118,6 +135,10 @@ const App = () => {
                 setNewNumber("");
             });
         }
+    };
+
+    const handleDelete = (id) => {
+        setPersons(persons.filter((p) => p.id !== id));
     };
 
     return (
@@ -133,7 +154,7 @@ const App = () => {
                 handleNewNumber={handleNewNumber}
             />
             <h2>Numbers</h2>
-            <Persons persons={personsToShow} list={persons} setPersons={setPersons}/>
+            <Persons persons={personsToShow} handleDelete={handleDelete} />
         </div>
     );
 };
