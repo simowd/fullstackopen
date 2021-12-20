@@ -12,21 +12,32 @@ const Filter = ({ filter, handleFilter }) => {
     );
 };
 
-const Person = ({ person }) => {
+const Person = ({ person, persons, setPersons }) => {
+    const deleteHandler = () => {
+        const message = `Do you wish to delete ${person.name}`;
+        const result = window.confirm(message);
+        if (result) {
+            noteService.deleteNumber(person.id).then((response) => {
+                setPersons(persons.filter((p) => p.id !== person.id))
+            });
+        }
+    };
+
     return (
         <>
             <div>
-                {person.name} {person.number}
+                {person.name} {person.number}{" "}
+                <button onClick={deleteHandler}>delete</button>
             </div>
         </>
     );
 };
 
-const Persons = ({ persons }) => {
+const Persons = ({ persons, list, setPersons }) => {
     return (
         <>
             {persons.map((person) => (
-                <Person person={person} key={person.id} />
+                <Person person={person} key={person.id} persons={list} setPersons={setPersons}/>
             ))}
         </>
     );
@@ -122,7 +133,7 @@ const App = () => {
                 handleNewNumber={handleNewNumber}
             />
             <h2>Numbers</h2>
-            <Persons persons={personsToShow} />
+            <Persons persons={personsToShow} list={persons} setPersons={setPersons}/>
         </div>
     );
 };
