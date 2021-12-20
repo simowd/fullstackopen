@@ -28,15 +28,25 @@ app.get("/api/persons", (request, response) => {
     response.json(persons);
 });
 
-app.get("/api/info",(request,response) => {
+app.get("/api/info", (request, response) => {
     const date = new Date();
 
     response.send(
         `<p>Phonebook has info for ${persons.length} people</p>
         <br />
         <p>${date.toString()}</p>`
-    )
-})
+    );
+});
+
+app.get("/api/persons/:id", (request, response) => {
+    const id = Number(request.params.id);
+    const person = persons.find((p) => p.id === id);
+    if (person) {
+        response.json(person);
+    } else {
+        response.status(404).send();
+    }
+});
 
 const PORT = 3001;
 app.listen(PORT);
