@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 
+app.use(express.json());
+
 let persons = [
     {
         id: 1,
@@ -23,6 +25,12 @@ let persons = [
         number: "39-23-6423122",
     },
 ];
+
+const MAX_ID = 10000;
+
+const idGenerator = (max) => {
+    return Math.floor(Math.random() * max);
+}
 
 app.get("/api/persons", (request, response) => {
     response.json(persons);
@@ -53,6 +61,15 @@ app.delete("/api/persons/:id", (request, response) => {
     persons = persons.filter((p) => p.id !== id);
 
     response.status(204).end();
+});
+
+app.post("/api/persons", (request, response) => {
+    const person = request.body;
+    //Generating new ID
+    const id = idGenerator(MAX_ID)
+    const newPerson = {id: id, ...person}
+    persons = persons.concat(newPerson)
+    response.json(newPerson)
 });
 
 const PORT = 3001;

@@ -5,3 +5,11 @@ GET http://localhost:3001/api/info
 GET http://localhost:3001/api/persons/6
 ###
 DELETE http://localhost:3001/api/persons/2
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "Andrew Garfield",
+    "number": "498-7894123"
+}
