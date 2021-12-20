@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const Country = ({ name }) => {
+const Country = ({ name, setSearch, setFilter }) => {
+  const showHandler = () => {
+    setSearch(name)
+    setFilter([name])
+  }
     return (
         <div>
             <br />
-            {name}
+            {name} <button onClick={showHandler}>show</button>
         </div>
     );
 };
@@ -52,7 +56,7 @@ const App = () => {
             ) : filter.length === 1 ? (
                 <Detail country={countries.find(country => country.name.common.toLowerCase().includes(filter))}/>
             ) : (
-                filter.map((country) => <Country key={country} name={country} />)
+                filter.map((country) => <Country key={country} name={country} setSearch={setSearch} setFilter={setFilter}/>)
             )}
         </div>
     );
