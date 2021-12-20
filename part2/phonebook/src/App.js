@@ -12,6 +12,18 @@ const Filter = ({ filter, handleFilter }) => {
     );
 };
 
+const Notification = ({ message, error }) => {
+    if (message === null) {
+        return null;
+    }
+
+    if (error) {
+        return <div className="error">{message}</div>;
+    } else {
+        return <div className="success">{message}</div>;
+    }
+};
+
 const Person = ({ person, handleDelete }) => {
     const deleteHandler = () => {
         const message = `Do you wish to delete ${person.name}`;
@@ -78,6 +90,8 @@ const App = () => {
     const [newName, setNewName] = useState("");
     const [newNumber, setNewNumber] = useState("");
     const [filter, setFilter] = useState("");
+    const [notificationMessage, setNotificationMessage] = useState(null);
+    const [notificationStatus, setnotificationStatus] = useState(true);
 
     useEffect(() => {
         noteService.getAll().then((response) => {
@@ -118,21 +132,39 @@ const App = () => {
                 `${newName} is already add to phonebook, update new number?`
             );
             if (state) {
-                const index = persons.map((person) => person.name).findIndex((e) => e === newName);
+                const index = persons
+                    .map((person) => person.name)
+                    .findIndex((e) => e === newName);
                 nameObject.id = persons[index].id;
-                noteService.changeNumber(nameObject).then((response) => {
-                    setPersons(
-                        persons.map((p) =>
-                            p.id === response.id ? response : p
-                        )
-                    );
-                });
+                noteService
+                    .changeNumber(nameObject)
+                    .then((response) => {
+                        setPersons(
+                            persons.map((p) =>
+                                p.id === response.id ? response : p
+                            )
+                        );
+                    })
+                    .catch((response) => {
+                        setnotificationStatus(true);
+                        setNotificationMessage(
+                            `${newName} was already deleted`
+                        );
+                        setTimeout(() => {
+                            setNotificationMessage(null);
+                        }, 5000);
+                    });
             }
         } else {
             noteService.addNew(nameObject).then((response) => {
                 setPersons(persons.concat(response));
                 setNewName("");
                 setNewNumber("");
+                setnotificationStatus(false);
+                setNotificationMessage(`Added ${response.name}`);
+                setTimeout(() => {
+                    setNotificationMessage(null);
+                }, 5000);
             });
         }
     };
@@ -144,6 +176,10 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+            <Notification
+                message={notificationMessage}
+                error={notificationStatus}
+            />
             <Filter filter={filter} handleFilter={handleFilter} />
             <h1>add a new</h1>
             <PersonForm
