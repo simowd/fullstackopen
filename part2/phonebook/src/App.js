@@ -165,6 +165,13 @@ const App = () => {
                 setTimeout(() => {
                     setNotificationMessage(null);
                 }, 5000);
+            }).catch(response => {
+                console.log(response.response.data.error)
+                setnotificationStatus(true);
+                setNotificationMessage(response.response.data.error);
+                setTimeout(() => {
+                    setNotificationMessage(null);
+                }, 5000);
             });
         }
     };

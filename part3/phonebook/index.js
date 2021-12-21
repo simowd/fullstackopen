@@ -115,6 +115,7 @@ app.post("/api/persons", (request, response, next) => {
 app.put("/api/persons/:id", (request, response, next) => {
     const person = request.body;
     const id = request.params.id;
+    const opts = { runValidators: true };
 
     if (!person.name || !person.number) {
         return response.status(400).json({
