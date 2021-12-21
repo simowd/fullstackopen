@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import noteService from "./services/notes";
+import personService from "./services/persons";
 
 const Filter = ({ filter, handleFilter }) => {
     return (
@@ -29,7 +29,7 @@ const Person = ({ person, handleDelete }) => {
         const message = `Do you wish to delete ${person.name}`;
         const result = window.confirm(message);
         if (result) {
-            noteService.deleteNumber(person.id).then((response) => {
+            personService.deleteNumber(person.id).then((response) => {
                 handleDelete(person.id);
             });
         }
@@ -94,7 +94,7 @@ const App = () => {
     const [notificationStatus, setnotificationStatus] = useState(true);
 
     useEffect(() => {
-        noteService.getAll().then((response) => {
+        personService.getAll().then((response) => {
             setPersons(response);
         });
     }, []);
@@ -136,7 +136,7 @@ const App = () => {
                     .map((person) => person.name)
                     .findIndex((e) => e === newName);
                 nameObject.id = persons[index].id;
-                noteService
+                personService
                     .changeNumber(nameObject)
                     .then((response) => {
                         setPersons(
@@ -156,7 +156,7 @@ const App = () => {
                     });
             }
         } else {
-            noteService.addNew(nameObject).then((response) => {
+            personService.addNew(nameObject).then((response) => {
                 setPersons(persons.concat(response));
                 setNewName("");
                 setNewNumber("");

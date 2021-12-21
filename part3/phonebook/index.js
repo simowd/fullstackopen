@@ -66,7 +66,7 @@ app.get("/api/info", (request, response) => {
 });
 
 app.get("/api/persons/:id", (request, response) => {
-    const id = Number(request.params.id);
+    const id = request.params.id;
     const person = persons.find((p) => p.id === id);
     if (person) {
         response.json(person);
@@ -118,6 +118,29 @@ app.post("/api/persons", (request, response) => {
     newPerson.save().then((savedPerson) => {
         response.json(savedPerson);
     });
+});
+
+app.put("/api/persons/:id", (request, response, next) => {
+    const person = request.body;
+    const id = request.params.id;
+
+    if (!person.name || !person.number) {
+        return response.status(400).json({
+            error: "content missing",
+        });
+    }
+
+    const changedPerson = {
+        name: person.name,
+        number: person.number,
+    };
+
+    Person
+        .findByIdAndUpdate(id, changedPerson, { new: true })
+        .then((updatedNote) => {
+            response.json(updatedNote);
+        })
+        .catch((error) => next(error));
 });
 
 const unknownEndpoint = (request, response) => {
