@@ -90,16 +90,30 @@ app.post("/api/persons", (request, response) => {
             error: "content missing",
         });
     }
+    Person.find({})
+        .then((result) => {
+            if (result.find((p) => p.name === person.name)) {
+                return response
+                    .status(409)
+                    .json({ error: "name must be unique" });
+            }
+        })
+        .catch((result) => {
+            response.status(500).send();
+        });
 
-    if (persons.find((p) => p.name === person.name)) {
-        return response.status(409).json({ error: "name must be unique" });
-    }
-
-    //Generating new ID
-    const id = idGenerator(MAX_ID);
+    //Old code
+    /*const id = idGenerator(MAX_ID);
     const newPerson = { id: id, ...person };
-    persons = persons.concat(newPerson);
-    response.json(newPerson);
+    persons = persons.concat(newPerson);*/
+    const newPerson = new Person({
+        name: person.name,
+        number: person.number,
+    });
+
+    newPerson.save().then((savedPerson) => {
+        response.json(savedPerson);
+    });
 });
 
 const PORT = process.env.PORT || 3001;
