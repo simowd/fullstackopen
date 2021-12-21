@@ -67,12 +67,15 @@ app.get("/api/info", (request, response) => {
 
 app.get("/api/persons/:id", (request, response) => {
     const id = request.params.id;
-    const person = persons.find((p) => p.id === id);
-    if (person) {
-        response.json(person);
-    } else {
-        response.status(404).send();
-    }
+    Person.findById(id)
+        .then((result) => {
+            console.log(result);
+            response.json(result);
+        })
+        .catch((error) => {
+            console.log(error);
+            response.status(400).send({ error: "malformatted id" });
+        });
 });
 
 app.delete("/api/persons/:id", (request, response, next) => {
@@ -135,8 +138,7 @@ app.put("/api/persons/:id", (request, response, next) => {
         number: person.number,
     };
 
-    Person
-        .findByIdAndUpdate(id, changedPerson, { new: true })
+    Person.findByIdAndUpdate(id, changedPerson, { new: true })
         .then((updatedNote) => {
             response.json(updatedNote);
         })
