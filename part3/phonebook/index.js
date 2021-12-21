@@ -2,14 +2,19 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
+const Person = require("./models/person");
 
 //morgan config
 morgan.token("body", (request, response) => JSON.stringify(request.body));
-app.use(morgan(":method :url :status :res[content-length] - :response-time ms :body"));
+app.use(
+    morgan(
+        ":method :url :status :res[content-length] - :response-time ms :body"
+    )
+);
 
 app.use(express.json());
-app.use(cors())
-app.use(express.static('build'))
+app.use(cors());
+app.use(express.static("build"));
 
 let persons = [
     {
@@ -41,7 +46,13 @@ const idGenerator = (max) => {
 };
 
 app.get("/api/persons", (request, response) => {
-    response.json(persons);
+    Person.find({})
+        .then((result) => {
+            response.json(result);
+        })
+        .catch((result) => {
+            response.status(500).send();
+        });
 });
 
 app.get("/api/info", (request, response) => {
