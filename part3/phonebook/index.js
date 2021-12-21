@@ -1,6 +1,10 @@
 const express = require("express");
+const morgan = require("morgan");
 const app = express();
 
+//morgan config
+morgan.token("body", (request, response) => JSON.stringify(request.body));
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms :body"));
 app.use(express.json());
 
 let persons = [
@@ -30,7 +34,7 @@ const MAX_ID = 10000;
 
 const idGenerator = (max) => {
     return Math.floor(Math.random() * max);
-}
+};
 
 app.get("/api/persons", (request, response) => {
     response.json(persons);
@@ -65,11 +69,22 @@ app.delete("/api/persons/:id", (request, response) => {
 
 app.post("/api/persons", (request, response) => {
     const person = request.body;
+
+    if (!person.name || !person.number) {
+        return response.status(400).json({
+            error: "content missing",
+        });
+    }
+
+    if (persons.find((p) => p.name === person.name)) {
+        return response.status(409).json({ error: "name must be unique" });
+    }
+
     //Generating new ID
-    const id = idGenerator(MAX_ID)
-    const newPerson = {id: id, ...person}
-    persons = persons.concat(newPerson)
-    response.json(newPerson)
+    const id = idGenerator(MAX_ID);
+    const newPerson = { id: id, ...person };
+    persons = persons.concat(newPerson);
+    response.json(newPerson);
 });
 
 const PORT = 3001;

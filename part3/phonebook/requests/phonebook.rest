@@ -13,3 +13,11 @@ Content-Type: application/json
     "name": "Andrew Garfield",
     "number": "498-7894123"
 }
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "Arto Hellas",
+    "number": "498-7894123"
+}
