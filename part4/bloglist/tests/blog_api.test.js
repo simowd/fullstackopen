@@ -65,7 +65,7 @@ describe('blog api requests', () => {
         expect(response.status).toEqual(400)
     })
 
-    test('delete note by id', async () => {
+    test('delete blogpost by id', async () => {
         const newBlogpost = {
             _id: "5a422ba71b54a676234d17fb",
             title: "TDD harms architecture",
@@ -76,8 +76,28 @@ describe('blog api requests', () => {
 
         const response = await api.post('/api/blogs').send(newBlogpost)
         const responseDelete = await api.delete(`/api/blogs/${response.body.id}`)
-        
+
         expect(responseDelete.status).toEqual(204)
+    })
+    
+    test('update blogpost by id', async () => {
+        const newBlogpost = {
+            _id: "5a422bc61b54a676234d17fc",
+            title: "Type wars",
+            author: "Robert C. Martin",
+            url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+            likes: 2,
+        }
+
+        const response = await api.post('/api/blogs').send(newBlogpost)
+
+        const update = {
+            likes: 3
+        }
+
+        const responseUpdate = await api.put(`/api/blogs/${response.body.id}`).send(update)
+        
+        expect(responseUpdate.body.likes).toEqual(update.likes)
     })
 })
 
