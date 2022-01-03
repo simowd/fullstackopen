@@ -56,6 +56,14 @@ describe('blog api requests', () => {
 
         expect(response.body.likes).toEqual(0)
     })
+
+    test('400 error when not sending url or title', async () => {
+        const newBlogPost = {
+            author: "James Clear",
+        }
+        const response = await api.post('/api/blogs').send(newBlogPost)
+        expect(response.status).toEqual(400)
+    })
 })
 
 afterAll(() => {
