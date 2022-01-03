@@ -44,6 +44,18 @@ describe('blog api requests', () => {
         expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
         expect(titles).toContain(newBlogPost.title)
     })
+
+    test('verify that likes are on zero when not sent', async () => {
+        const newBlogPost = {
+            title: "Atomic Habits",
+            author: "James Clear",
+            url: "https://jamesclear.com/atomic-habits",
+        }
+
+        const response = await api.post('/api/blogs').send(newBlogPost)
+
+        expect(response.body.likes).toEqual(0)
+    })
 })
 
 afterAll(() => {
