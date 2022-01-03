@@ -27,6 +27,23 @@ describe('blog api requests', () => {
         const unique_id = response.body.map(blog => blog.id)
         expect(unique_id[0]).toBeDefined()
     })
+
+    test('verify that a new blog is created with request', async () => {
+        const newBlogPost = {
+            title: "Atomic Habits",
+            author: "James Clear",
+            url: "https://jamesclear.com/atomic-habits",
+            likes: 10,
+        }
+
+        await api.post('/api/blogs').send(newBlogPost).expect(201).expect('Content-Type', /application\/json/)
+
+        const response = await api.get('/api/blogs')
+        const titles = response.body.map(blog => blog.title)
+
+        expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
+        expect(titles).toContain(newBlogPost.title)
+    })
 })
 
 afterAll(() => {
