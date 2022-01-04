@@ -47,8 +47,20 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
     const id = request.params.id
-    const result = await Blog.findByIdAndRemove(id)
-    response.status(204).end()
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+    const user = await User.findById(decodedToken.id)
+    const blog = await Blog.findById(id)
+
+    if(user.id.toString() === blog.user.toString()){
+        const result = await Blog.findByIdAndRemove(id)
+        response.status(204).end()
+    }
+    else{
+        response.status(401).send({error: "invalid user"})
+    }
+    
+    response.status(400).end()
 })
 
 blogsRouter.put('/:id', async (request, response) => {
