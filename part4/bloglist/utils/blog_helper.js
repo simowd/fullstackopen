@@ -24,6 +24,13 @@ const initialBlogs = [
         __v: 0
     }]
 
+const newUser = {
+    name: 'superuser',
+    username: 'test',
+    password: 'test'
+}
+
 module.exports = {
     initialBlogs,
+    newUser
 }
