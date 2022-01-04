@@ -11,6 +11,16 @@ userRouter.get('/', async (request, response) => {
 userRouter.post('/', async (request, response) => {
     const newUser = request.body
     const saltRounds = 10
+   
+
+    if(!newUser.username || !newUser.password){
+        response.status(400).send({error:'incomplete request'})
+    }
+
+    if(newUser.password.length < 3){
+        response.status(400).send({error:'Password too short'})
+    }
+
     const passwordHash = await bcrypt.hash(newUser.password, saltRounds)
 
     const newUserObject = new User({
