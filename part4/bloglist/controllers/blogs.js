@@ -32,7 +32,6 @@ blogsRouter.post('/', async (request, response) => {
     user.blogs = user.blogs.concat(result._id)
     
     await user.save()
-    console.log('muere aqui')
     response.status(201).json(result)
 })
 
