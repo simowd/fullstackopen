@@ -23,13 +23,30 @@ const errorHandler = (error, request, response, next) => {
     return response.status(401).json({
       error: 'token expired'
     })
+  } else if (error.name === 'JsonWebTokenError') {
+    return response.status(401).json({
+      error: 'invalid token'
+    })
   }
 
   next(error)
 }
 
+const formatToken = (request, response, next) => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    const token = authorization.substring(7)
+    request.token = token
+  }
+  else{
+    request.token = null
+  }
+  next()
+}
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
-  errorHandler
+  errorHandler,
+  formatToken
 }

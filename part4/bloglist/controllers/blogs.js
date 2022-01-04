@@ -18,8 +18,7 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
     const body = request.body
-    const token = getTokenFrom(request)
-    const decodedToken = jwt.verify(token, process.env.SECRET)
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
 
     if(!decodedToken.id) {
         return response.status(401).json({error: 'token missing or invalid'})
@@ -27,10 +26,6 @@ blogsRouter.post('/', async (request, response) => {
 
     if (!body.url || !body.title) {
         response.status(400).send({ error: 'url or title not sent' })
-    }
-
-    if (!body.userId) {
-        response.status(400).send({ error: 'userId not sent' })
     }
 
     const user = await User.findById(decodedToken.id)
