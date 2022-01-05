@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
 import loginService from './services/login'
+import NewBlogForm from './components/NewBlogForm'
 
 const Notification = ({ message, error }) => {
   if (message === null) {
@@ -42,6 +43,7 @@ const App = () => {
     return (
       <div>
         <h2>blogs</h2>
+        <NewBlogForm blogs={blogs} setBlogs={setBlogs}/>
         <p>{user.name} logged in <button onClick={logOut}>log out</button></p> 
         {
           blogs.map(blog =>
