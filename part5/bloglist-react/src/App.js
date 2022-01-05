@@ -43,7 +43,7 @@ const App = () => {
     return (
       <div>
         <h2>blogs</h2>
-        <NewBlogForm blogs={blogs} setBlogs={setBlogs}/>
+        <NewBlogForm blogs={blogs} setBlogs={setBlogs} setNotificationMessage={setNotificationMessage} setnotificationStatus={setnotificationStatus}/>
         <p>{user.name} logged in <button onClick={logOut}>log out</button></p> 
         {
           blogs.map(blog =>
