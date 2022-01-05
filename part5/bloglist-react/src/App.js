@@ -4,6 +4,7 @@ import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
 import loginService from './services/login'
 import NewBlogForm from './components/NewBlogForm'
+import Togglable from './components/Togglable'
 
 const Notification = ({ message, error }) => {
   if (message === null) {
@@ -43,8 +44,13 @@ const App = () => {
     return (
       <div>
         <h2>blogs</h2>
-        <NewBlogForm blogs={blogs} setBlogs={setBlogs} setNotificationMessage={setNotificationMessage} setnotificationStatus={setnotificationStatus}/>
-        <p>{user.name} logged in <button onClick={logOut}>log out</button></p> 
+
+        <p>{user.name} logged in <button onClick={logOut}>log out</button></p>
+
+        <Togglable buttonLabel='create new blog'>
+          <NewBlogForm blogs={blogs} setBlogs={setBlogs} setNotificationMessage={setNotificationMessage} setnotificationStatus={setnotificationStatus} />
+        </Togglable>
+
         {
           blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
