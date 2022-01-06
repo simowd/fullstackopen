@@ -19,12 +19,11 @@ const Blog = ({ blog, blogs, setBlogs }) => {
 
   const toggleVisibility = () => {
     setVisible(!visible)
-    
   }
 
   const addLike = async () => {
     await blogHelper.addLike(blog)
-    setBlogs(blogs.filter(b => b.id !== blog.id).concat({...blog, likes: blog.likes + 1}).sort((first, second) => second.likes - first.likes))
+    setBlogs(blogs.filter(b => b.id !== blog.id).concat({ ...blog, likes: blog.likes + 1 }).sort((first, second) => second.likes - first.likes))
   }
 
   const deleteBlog = async () => {

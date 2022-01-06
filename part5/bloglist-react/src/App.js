@@ -8,23 +8,23 @@ import Togglable from './components/Togglable'
 
 const Notification = ({ message, error }) => {
   if (message === null) {
-    return null;
+    return null
   }
 
   if (error) {
-    return <div className="error">{message}</div>;
+    return <div className="error">{message}</div>
   } else {
-    return <div className="success">{message}</div>;
+    return <div className="success">{message}</div>
   }
-};
+}
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [notificationMessage, setNotificationMessage] = useState(null);
-  const [notificationStatus, setnotificationStatus] = useState(true);
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [notificationStatus, setnotificationStatus] = useState(true)
 
   const loginForm = () => {
     return (
@@ -72,7 +72,7 @@ const App = () => {
       window.localStorage.setItem('user', JSON.stringify(user))
     } catch (exception) {
       setNotificationMessage('Wrong credentials')
-      setnotificationStatus(true);
+      setnotificationStatus(true)
       setTimeout(() => {
         setNotificationMessage(null)
       }, 5000)
