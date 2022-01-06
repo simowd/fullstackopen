@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import blogHelper from '../services/blogs'
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, blogs, setBlogs }) => {
   const [visible, setVisible] = useState(true)
@@ -61,4 +62,11 @@ const Blog = ({ blog, blogs, setBlogs }) => {
     </div>
   )
 }
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  blogs: PropTypes.array.isRequired,
+  setBlogs: PropTypes.func.isRequired
+}
+
 export default Blog
