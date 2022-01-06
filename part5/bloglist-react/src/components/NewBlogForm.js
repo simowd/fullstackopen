@@ -41,7 +41,7 @@ const NewBlogForm = ({ blogs, setBlogs, setNotificationMessage, setnotificationS
           <input
             type="text"
             value={title}
-            name="Title"
+            id="title"
             onChange={({ target }) => setTitle(target.value)}
           />
         </div>
@@ -50,7 +50,7 @@ const NewBlogForm = ({ blogs, setBlogs, setNotificationMessage, setnotificationS
           <input
             type="text"
             value={author}
-            name="Author"
+            id="author"
             onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
@@ -59,7 +59,7 @@ const NewBlogForm = ({ blogs, setBlogs, setNotificationMessage, setnotificationS
           <input
             type="text"
             value={url}
-            name="URL"
+            id="url"
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>

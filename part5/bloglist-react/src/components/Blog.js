@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import blogHelper from '../services/blogs'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, blogs, setBlogs }) => {
+const Blog = ({ blog, blogs, setBlogs, addLike }) => {
   const [visible, setVisible] = useState(true)
 
   const containerStyle = {
@@ -19,11 +19,6 @@ const Blog = ({ blog, blogs, setBlogs }) => {
 
   const toggleVisibility = () => {
     setVisible(!visible)
-  }
-
-  const addLike = async () => {
-    await blogHelper.addLike(blog)
-    setBlogs(blogs.filter(b => b.id !== blog.id).concat({ ...blog, likes: blog.likes + 1 }).sort((first, second) => second.likes - first.likes))
   }
 
   const deleteBlog = async () => {

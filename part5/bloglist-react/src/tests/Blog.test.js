@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import { render, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import Blog from '../components/Blog'
@@ -16,8 +16,9 @@ describe('<Blog />', () => {
   const mockCallback = jest.fn()
 
   beforeEach(() => {
+    mockCallback.mockClear()
     component = render(
-      <Blog blog={data} blogs={[]} setBlogs={mockCallback} />
+      <Blog blog={data} blogs={[]} setBlogs={mockCallback} addLike={mockCallback} />
     )
   })
 
@@ -34,5 +35,17 @@ describe('<Blog />', () => {
     const data = component.container.querySelector('.blogUnwrapped')
     expect(data).toHaveTextContent('hola.com')
     expect(data).toHaveTextContent('50')
+  })
+
+  test('Clicking twice the like button triggers the function two times', () => {
+
+    const button = component.container.querySelector('button')
+    fireEvent.click(button)
+
+    const like = component.getByText('like')
+    fireEvent.click(like)
+    fireEvent.click(like)
+
+    expect(mockCallback.mock.calls).toHaveLength(2)
   })
 })
