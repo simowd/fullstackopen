@@ -26,6 +26,11 @@ const Blog = ({ blog, blogs, setBlogs }) => {
     setBlogs(blogs.filter(b => b.id !== blog.id).concat({...blog, likes: blog.likes + 1}).sort((first, second) => second.likes - first.likes))
   }
 
+  const deleteBlog = async () => {
+    await blogHelper.remove(blog)
+    setBlogs(blogs.filter(b => b.id !== blog.id).sort((first, second) => second.likes - first.likes))
+  }
+
   const showTitle = () => {
     return (
       <div style={containerStyle}>
@@ -44,6 +49,8 @@ const Blog = ({ blog, blogs, setBlogs }) => {
         likes {blog.likes} <button onClick={addLike}>like</button>
         <br />
         {blog.user.name}
+        <br />
+        <button onClick={deleteBlog}>remove</button>
       </div>
     )
   }
