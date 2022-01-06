@@ -40,7 +40,7 @@ describe('Blog app', function () {
     })
   })
 
-  describe('When logged in', function() {
+  describe.only('When logged in', function() {
     beforeEach(function() {
       cy.request('POST', 'http://localhost:3003/api/testing/reset')
       const user = {
@@ -52,7 +52,7 @@ describe('Blog app', function () {
       cy.login({ username: 'mluukkai', password: 'salainen' })
     })
 
-    it.only('A blog can be created', function() {
+    it('A blog can be created', function() {
       cy.contains('logged in')
       cy.get('#show').click()
       cy.get('#title').type('Un huachimingo')
@@ -60,6 +60,20 @@ describe('Blog app', function () {
       cy.get('#url').type('hola.com')
       cy.get('#create').click()
       cy.contains('new blog')
+    })
+
+    it('Can like a blog', function() {
+      cy.contains('logged in')
+      cy.get('#show').click()
+      cy.get('#title').type('Un huachimingo')
+      cy.get('#author').type('El jojos')
+      cy.get('#url').type('hola.com')
+      cy.get('#create').click()
+      cy.contains('new blog')
+      cy.contains('Un huachimingo')
+      cy.contains('view').click()
+      cy.contains('like').click()
+      cy.contains(1)
     })
   })
 })
