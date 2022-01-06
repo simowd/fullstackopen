@@ -75,5 +75,18 @@ describe('Blog app', function () {
       cy.contains('like').click()
       cy.contains(1)
     })
+
+    it('Can delete a blog', function() {
+      cy.contains('logged in')
+      cy.get('#show').click()
+      cy.get('#title').type('Un huachimingo')
+      cy.get('#author').type('El jojos')
+      cy.get('#url').type('hola.com')
+      cy.get('#create').click()
+      cy.contains('new blog')
+      cy.contains('Un huachimingo')
+      cy.contains('view').click()
+      cy.contains('remove').click()
+    })
   })
 })
