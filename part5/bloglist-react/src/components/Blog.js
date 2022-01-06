@@ -33,7 +33,7 @@ const Blog = ({ blog, blogs, setBlogs }) => {
 
   const showTitle = () => {
     return (
-      <div style={containerStyle}>
+      <div style={containerStyle} className='blogWrapped'>
         {blog.title} {blog.author} <button onClick={toggleVisibility}> view </button>
       </div>
     )
@@ -41,7 +41,7 @@ const Blog = ({ blog, blogs, setBlogs }) => {
 
   const showDetails = () => {
     return(
-      <div style={containerStyle}>
+      <div style={containerStyle} className='blogUnwrapped'>
         {blog.title} {blog.author} <button onClick={toggleVisibility}> hide </button>
         <br />
         {blog.url}
