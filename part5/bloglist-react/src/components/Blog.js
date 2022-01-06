@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
+import blogHelper from '../services/blogs'
 
-const Blog = ({ blog, key }) => {
+const Blog = ({ blog, blogs, setBlogs }) => {
   const [visible, setVisible] = useState(true)
 
   const containerStyle = {
@@ -11,8 +12,18 @@ const Blog = ({ blog, key }) => {
     margin: '0.5rem',
   }
 
+  useEffect(() => {
+
+  })
+
   const toggleVisibility = () => {
     setVisible(!visible)
+    
+  }
+
+  const addLike = async () => {
+    await blogHelper.addLike(blog)
+    setBlogs(blogs.filter(b => b.id !== blog.id).concat({...blog, likes: blog.likes + 1}))
   }
 
   const showTitle = () => {
@@ -30,7 +41,7 @@ const Blog = ({ blog, key }) => {
         <br />
         {blog.url}
         <br />
-        likes {blog.likes} <button>like</button>
+        likes {blog.likes} <button onClick={addLike}>like</button>
         <br />
         {blog.user.name}
       </div>
