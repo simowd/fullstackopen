@@ -29,8 +29,8 @@ const reducer = (state = initialState, action) => {
       const id = action.data
       newState = state.map((a) => a.id === id ? { ...a, votes: a.votes + 1} : a)
       return newState
-      break;
-  
+    case 'NEW_ANECDOTE':
+      return state.concat(asObject(action.data))
     default:
       break;
   }
