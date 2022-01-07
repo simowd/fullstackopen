@@ -41,7 +41,7 @@ const Blog = ({ blog, blogs, setBlogs, addLike }) => {
         <br />
         {blog.url}
         <br />
-        likes {blog.likes} <button onClick={addLike}>like</button>
+        likes <span id={`${blog.title}-likes`}>{blog.likes}</span> <button onClick={addLike}>like</button>
         <br />
         {blog.user.name}
         <br />
@@ -51,7 +51,7 @@ const Blog = ({ blog, blogs, setBlogs, addLike }) => {
   }
 
   return (
-    <div>
+    <div id={blog.title}>
       {visible ? showTitle() : showDetails()}
     </div>
   )

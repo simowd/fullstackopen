@@ -40,7 +40,7 @@ describe('Blog app', function () {
     })
   })
 
-  describe.only('When logged in', function() {
+  describe('When logged in', function() {
     beforeEach(function() {
       cy.request('POST', 'http://localhost:3003/api/testing/reset')
       const user = {
@@ -87,6 +87,54 @@ describe('Blog app', function () {
       cy.contains('Un huachimingo')
       cy.contains('view').click()
       cy.contains('remove').click()
+    })
+
+    it.only('Check order of likes', function() {
+      const hello = {
+        title: 'Hello',
+        author: 'Washimingo',
+        url:'hola.com'
+      }
+      const bye = {
+        title: 'Bye',
+        author: 'Huachiturro',
+        url:'hola.com'
+      }
+      const comeback = {
+        title: 'Comeback',
+        author: 'Huachimango',
+        url:'hola.com'
+      }
+      cy.contains('logged in')
+      cy.newBlog(hello)
+      cy.newBlog(bye)
+      cy.newBlog(comeback)
+
+      cy.get('#Comeback').within(() => {
+        cy.contains('view').click()
+        cy.get('button').contains('like').click()
+        cy.wait(500)
+        cy.get('button').contains('like').click()
+        cy.wait(500)
+        cy.get('button').contains('like').click()
+        cy.wait(500)
+      })
+
+      cy.get('#Hello').within(() => {
+        cy.contains('view').click()
+        cy.get('button').contains('like').click()
+        cy.wait(500)
+      })
+
+      cy.get('#Bye').within(() => {
+        cy.contains('view').click()
+        cy.get('button').contains('like').click()
+        cy.wait(500)
+        cy.get('button').contains('like').click()
+        cy.wait(500)
+      })
+
+      cy.get('#blogs').find('[id$=-likes]')
     })
   })
 })

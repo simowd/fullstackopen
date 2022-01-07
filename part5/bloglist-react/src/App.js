@@ -58,12 +58,13 @@ const App = () => {
         <Togglable buttonLabel='create new blog'>
           <NewBlogForm blogs={blogs} setBlogs={setBlogs} setNotificationMessage={setNotificationMessage} setnotificationStatus={setnotificationStatus} />
         </Togglable>
-
-        {
-          blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} addLike={addLike(blog)}/>
-          )
-        }
+        <div id='blogs'>
+          {
+            blogs.map(blog =>
+              <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} addLike={addLike(blog)} />
+            )
+          }
+        </div>
       </div>
     )
   }
