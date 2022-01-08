@@ -31,9 +31,16 @@ export const voteAnecdote = (id) => {
   }
 }
 
+export const initializeAnecdotes = (anecdotes) => {
+  return {
+    type: 'INIT_ANECDOTES',
+    data: anecdotes,
+  }
+}
+
 const initialState = anecdotesAtStart.map(asObject)
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = [], action) => {
   console.log('state now: ', state)
   console.log('action', action)
 
@@ -45,6 +52,8 @@ const reducer = (state = initialState, action) => {
       return newState.sort((f, s) => s.votes - f.votes)
     case 'NEW_ANECDOTE':
       return state.concat(asObject(action.data))
+    case 'INIT_ANECDOTES':
+      return action.data
     default:
       break;
   }
