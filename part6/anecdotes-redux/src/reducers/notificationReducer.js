@@ -7,10 +7,18 @@ export const voteNotification = (anecdote) => {
   }
 }
 
-export const newNotification = (anecdote) => {
-  return {
-    type: 'NEW_ANECDOTE',
-    data: anecdote
+export const setNotification = (message, time) => {
+  return async dispatch => {
+    dispatch({
+      type: 'NEW_NOTIFICATION',
+      data: message
+    })
+    setTimeout(() => {
+      dispatch({
+        type: 'EMPTY_NOTIFICATION',
+        data: ''
+      })
+    },time * 1000)
   }
 }
 
@@ -27,6 +35,8 @@ const reducer = (state = initialState, action) => {
       return action.data + ' created'
     case 'VOTE_NOTIFICATION':
       return 'you voted \''+ action.data + '\''
+    case 'NEW_NOTIFICATION':
+      return action.data
     case 'EMPTY_NOTIFICATION':
       return ''
     default:

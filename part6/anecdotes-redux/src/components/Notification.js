@@ -1,9 +1,7 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { emptyNotification } from '../reducers/notificationReducer'
+import { useSelector } from 'react-redux'
 
 const Notification = () => {
-  const dispatch = useDispatch()
   const notification = useSelector(state => state.notification)
   const style = {
     border: 'solid',
@@ -12,9 +10,6 @@ const Notification = () => {
   }
 
   const notificationRender = () => {
-    setTimeout(() => {
-      dispatch(emptyNotification())
-    }, 5000)
     return (
       <div style={style}>
         {notification}
