@@ -28,14 +28,6 @@ const App = () => {
     )
   }
 
-  const addLike = (blog) => {
-    const handler = async () => {
-      await blogService.addLike(blog)
-      setBlogs(blogs.filter(b => b.id !== blog.id).concat({ ...blog, likes: blog.likes + 1 }).sort((first, second) => second.likes - first.likes))
-    }
-    return handler
-  }
-
   const logOut = () => {
     setUser(null)
     window.localStorage.removeItem('user')
@@ -54,7 +46,7 @@ const App = () => {
         <div id='blogs'>
           {
             blogs.map(blog =>
-              <Blog key={blog.id} blog={blog} blogs={blogs} addLike={addLike(blog)} />
+              <Blog key={blog.id} blog={blog} />
             )
           }
         </div>

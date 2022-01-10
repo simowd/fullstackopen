@@ -20,6 +20,25 @@ export const createBlog = (blog) => {
   }
 }
 
+export const deleteBlog = (blog) => {
+  return async (dispatch) => {
+    await blogService.remove(blog)
+    dispatch({
+      type: 'DELETE_BLOG',
+      data: blog
+    })
+  }
+}
+
+export const likeBlog = (blog) => {
+  return async (dispatch) => {
+    await blogService.addLike(blog)
+    dispatch({
+      type: 'LIKE_BLOG',
+      data: blog
+    })
+  }
+}
 
 const reducer = (state = [], action) => {
   switch(action.type){
@@ -27,6 +46,10 @@ const reducer = (state = [], action) => {
     return action.data
   case('CREATE_BLOG'):
     return state.concat(action.data)
+  case('DELETE_BLOG'):
+    return state.filter(b => b.id !== action.data.id).sort((first, second) => second.likes - first.likes)
+  case('LIKE_BLOG'):
+    return state.filter(b => b.id !== action.data.id).concat({ ...action.data, likes: action.data.likes + 1 }).sort((first, second) => second.likes - first.likes)
   }
   return state
 }
