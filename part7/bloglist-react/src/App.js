@@ -7,10 +7,11 @@ import NewBlogForm from './components/NewBlogForm'
 import Togglable from './components/Togglable'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
+import { getBlogs } from './reducers/blogReducer'
 import Notification from './components/Notification'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const blogs = useSelector(state => state.blogs)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -48,12 +49,12 @@ const App = () => {
         <p>{user.name} logged in <button onClick={logOut}>log out</button></p>
 
         <Togglable buttonLabel='create new blog'>
-          <NewBlogForm blogs={blogs} setBlogs={setBlogs} />
+          <NewBlogForm blogs={blogs}/>
         </Togglable>
         <div id='blogs'>
           {
             blogs.map(blog =>
-              <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} addLike={addLike(blog)} />
+              <Blog key={blog.id} blog={blog} blogs={blogs} addLike={addLike(blog)} />
             )
           }
         </div>
@@ -91,10 +92,8 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs.sort((first, second) => second.likes - first.likes))
-    )
-  }, [])
+    dispatch(getBlogs())
+  }, [dispatch])
 
   return (
     <div>

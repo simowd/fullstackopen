@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import blogService from '../services/blogs'
 import { setNotification } from '../reducers/notificationReducer'
+import { createBlog } from '../reducers/blogReducer'
 
-const NewBlogForm = ({ blogs, setBlogs }) => {
+const NewBlogForm = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -19,13 +20,12 @@ const NewBlogForm = ({ blogs, setBlogs }) => {
         author: author,
         url: url
       }
-      const newBlogData = await blogService.createBlog(newBlog)
-      setBlogs(blogs.concat(newBlogData))
+      dispatch(createBlog(newBlog))
       setAuthor('')
       setTitle('')
       setUrl('')
       const notificationMessage = {
-        message: `A new blog "${newBlogData.title}" has been created`,
+        message: `A new blog "${newBlog.title}" has been created`,
         status:false
       }
       dispatch(setNotification(notificationMessage,5))
