@@ -5,11 +5,12 @@ import Togglable from './components/Togglable'
 import { useDispatch, useSelector } from 'react-redux'
 import { getBlogs } from './reducers/blogReducer'
 import Notification from './components/Notification'
-import { clearUser, loadUser } from './reducers/userReducer'
+import { loadUser } from './reducers/userReducer'
 import { Switch, Route, Link } from 'react-router-dom'
 import Users from './components/Users'
 import User from './components/User'
 import Blog from './components/Blog'
+import Navbar from './components/Navbar'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
@@ -24,14 +25,6 @@ const App = () => {
         <h2>login</h2>
         <LoginForm />
       </div>
-    )
-  }
-
-  const logOutRender = () => {
-    return (
-      <>
-        <p>{user.name} logged in <button onClick={logOut}>log out</button></p>
-      </>
     )
   }
 
@@ -60,10 +53,6 @@ const App = () => {
     )
   }
 
-  const logOut = () => {
-    dispatch(clearUser())
-  }
-
   useEffect(() => {
     dispatch(loadUser())
   }, [])
@@ -76,8 +65,8 @@ const App = () => {
     <div>
       <Notification />
       {user === null && loginForm()}
+      {user !== null && <Navbar user={user}/>}
       <h2>blogs</h2>
-      {user !== null && logOutRender()}
       <Switch>
         <Route path='/blogs/:id'>
           {user !== null && <Blog />}
