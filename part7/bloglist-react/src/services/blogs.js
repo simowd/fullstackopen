@@ -35,6 +35,21 @@ const addLike = async (blog) => {
   console.log(response)
 }
 
+const addComment = async (blog, comment) => {
+  const config = {
+    headers: { Authorization:token }
+  }
+  const updatedBlog = {
+    ...blog,
+    comments: blog.comments.concat(comment)
+  }
+
+  delete updatedBlog.user
+
+  const response = await axios.put(baseUrl + `/${blog.id}`, updatedBlog, config)
+  console.log(response)
+}
+
 const remove = async (blog) => {
   const config = {
     headers: { Authorization:token }
@@ -43,4 +58,4 @@ const remove = async (blog) => {
   console.log(response)
 }
 
-export default { getAll, setToken, createBlog, addLike, remove }
+export default { getAll, setToken, createBlog, addLike, remove, addComment }

@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteBlog, likeBlog } from '../reducers/blogReducer'
+import { deleteBlog, likeBlog, newComment } from '../reducers/blogReducer'
 import { useHistory, useParams } from 'react-router-dom'
 import { getBlogs } from '../reducers/blogReducer'
 
@@ -8,6 +8,7 @@ const Blog = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const params = useParams()
+  const [comment, setComment] = useState('')
   const blog = useSelector(state => state.blogs.find((b) => b.id === params.id))
 
   if (!blog) {
@@ -24,6 +25,12 @@ const Blog = () => {
     history.push('/')
   }
 
+  const addComment = async (event) => {
+    event.preventDefault()
+    dispatch(newComment(blog, comment))
+    setComment('')
+  }
+
   return (
     <div id={blog.title}>
       <h3>{blog.title} by {blog.author}</h3>
@@ -34,11 +41,21 @@ const Blog = () => {
       added by: {blog.user.name}
       <br />
       <button onClick={deleteButtonBlog}>remove</button>
+      <br />
+      <br />
+      <br />
+      <form onSubmit={addComment}>
+        <input type="text"
+          value={comment}
+          id="username"
+          onChange={({ target }) => setComment(target.value)} />
+        <button>add comment</button>
+      </form>
 
       <h4>comments</h4>
-      <li>
-        {blog.comments.map(b => <ul key={b}>{b}</ul>)}
-      </li>
+      <ul>
+        {blog.comments.map(b => <li key={b}>{b}</li>)}
+      </ul>
     </div>
   )
 }

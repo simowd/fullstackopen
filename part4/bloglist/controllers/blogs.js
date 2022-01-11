@@ -57,7 +57,7 @@ blogsRouter.delete('/:id', async (request, response) => {
 blogsRouter.put('/:id', async (request, response) => {
     const id = request.params.id
     const blogpost = request.body
-    if (!blogpost.likes) {
+    if (!blogpost.comments) {
         return response.status(400).json({
             error: 'content missing',
         })
@@ -66,23 +66,6 @@ blogsRouter.put('/:id', async (request, response) => {
     const result = await Blog.findByIdAndUpdate(id, blogpost, { new: true })
 
     response.json(result)
-})
-
-blogsRouter.post('/:id/comments', async (request, response) => {
-    const id = request.params.id
-
-    const user = request.user
-    const blog = await Blog.findById(id)
-
-    if (user.id.toString() === blog.user.toString()) {
-        const result = await Blog.findByIdAndRemove(id)
-        response.status(204).end()
-    }
-    else {
-        response.status(401).send({ error: "invalid user" })
-    }
-
-    response.status(400).end()
 })
 
 module.exports = blogsRouter
