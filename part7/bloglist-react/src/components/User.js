@@ -16,7 +16,7 @@ const User = () => {
   }
 
   return (
-    <div>
+    <div key={user.id}>
       <h3>{user.name}</h3>
       <h4>added blogs</h4>
       <ul key={user.id}>
