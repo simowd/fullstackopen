@@ -16,7 +16,6 @@ const Notification = () => {
     <div>
       {notification.message !== null ? renderNotification() : null}
     </div>
-    
   )
 }
 

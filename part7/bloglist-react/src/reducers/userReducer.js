@@ -8,7 +8,8 @@ export const loadUser = () => {
     blogService.setToken(userParsed.token)
     return {
       type: 'LOAD_USER',
-      data: userParsed}
+      data: userParsed
+    }
   }
   return null
 }

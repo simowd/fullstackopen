@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { setNotification } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 import { setUser } from '../reducers/userReducer'

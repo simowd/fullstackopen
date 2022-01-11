@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getBlogs } from './reducers/blogReducer'
 import Notification from './components/Notification'
 import { clearUser, loadUser } from './reducers/userReducer'
+import { Switch, Route } from 'react-router'
+import Users from './components/Users'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
@@ -24,27 +26,19 @@ const App = () => {
     )
   }
 
-  const logOut = () => {
-    dispatch(clearUser())
+  const logOutRender = () => {
+    return (
+      <>
+        <p>{user.name} logged in <button onClick={logOut}>log out</button></p>
+      </>
+    )
   }
-
-  useEffect(() => {
-    dispatch(loadUser())
-  }, [])
-
-  useEffect(() => {
-    dispatch(getBlogs())
-  }, [dispatch])
 
   const blogsList = () => {
     return (
       <div>
-        <h2>blogs</h2>
-
-        <p>{user.name} logged in <button onClick={logOut}>log out</button></p>
-
         <Togglable buttonLabel='create new blog'>
-          <NewBlogForm blogs={blogs}/>
+          <NewBlogForm blogs={blogs} />
         </Togglable>
         <div id='blogs'>
           {
@@ -57,12 +51,32 @@ const App = () => {
     )
   }
 
+  const logOut = () => {
+    dispatch(clearUser())
+  }
+
+  useEffect(() => {
+    dispatch(loadUser())
+  }, [])
+
+  useEffect(() => {
+    dispatch(getBlogs())
+  }, [dispatch])
+
   return (
     <div>
-      <Notification/>
-
+      <Notification />
       {user === null && loginForm()}
-      {user !== null && blogsList()}
+      <h2>blogs</h2>
+      {user !== null && logOutRender()}
+      <Switch>
+        <Route path='/users'>
+          {user !== null && <Users />}
+        </Route>
+        <Route path='/'>
+          {user !== null && blogsList()}
+        </Route>
+      </Switch>
 
     </div>
   )

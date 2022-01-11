@@ -32,10 +32,10 @@ const reducer = (state = initialState, action) => {
   console.log('Notification state now', state)
   console.log('Notification action now', action)
   switch (action.type) {
-    case 'NEW_NOTIFICATION':
-      return action.data
-    case 'EMPTY_NOTIFICATION':
-      return initialState
+  case 'NEW_NOTIFICATION':
+    return action.data
+  case 'EMPTY_NOTIFICATION':
+    return initialState
   }
 
   return state

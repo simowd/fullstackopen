@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import blogHelper from '../services/blogs'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 import { deleteBlog, likeBlog } from '../reducers/blogReducer'
