@@ -9,6 +9,7 @@ import Notification from './components/Notification'
 import { clearUser, loadUser } from './reducers/userReducer'
 import { Switch, Route } from 'react-router'
 import Users from './components/Users'
+import User from './components/User'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
@@ -70,6 +71,9 @@ const App = () => {
       <h2>blogs</h2>
       {user !== null && logOutRender()}
       <Switch>
+        <Route path='/users/:id'>
+          {user !== null && <User />}
+        </Route>
         <Route path='/users'>
           {user !== null && <Users />}
         </Route>
