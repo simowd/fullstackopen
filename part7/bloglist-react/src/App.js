@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import Blog from './components/Blog'
-import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
-import loginService from './services/login'
 import NewBlogForm from './components/NewBlogForm'
 import Togglable from './components/Togglable'
 import { useDispatch, useSelector } from 'react-redux'
-import { setNotification } from './reducers/notificationReducer'
 import { getBlogs } from './reducers/blogReducer'
 import Notification from './components/Notification'
+import { clearUser, loadUser } from './reducers/userReducer'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+  const user = useSelector(state => state.user)
 
   //Redux Variables
   const dispatch = useDispatch()
@@ -23,15 +19,22 @@ const App = () => {
     return (
       <div>
         <h2>login</h2>
-        <LoginForm username={username} password={password} setUsername={setUsername} setPassword={setPassword} handleLogin={handleLogin} user={user} setUser={setUser} />
+        <LoginForm />
       </div>
     )
   }
 
   const logOut = () => {
-    setUser(null)
-    window.localStorage.removeItem('user')
+    dispatch(clearUser())
   }
+
+  useEffect(() => {
+    dispatch(loadUser())
+  }, [])
+
+  useEffect(() => {
+    dispatch(getBlogs())
+  }, [dispatch])
 
   const blogsList = () => {
     return (
@@ -53,39 +56,6 @@ const App = () => {
       </div>
     )
   }
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    try {
-      const userServer = await loginService.login({
-        username, password,
-      })
-      setUser(userServer)
-      setUsername('')
-      setPassword('')
-      window.localStorage.setItem('user', JSON.stringify(userServer))
-    } catch (exception) {
-      const notificationMessage = {
-        message: 'Wrong Credentials',
-        status: true
-      }
-      dispatch(setNotification(notificationMessage, 5))
-    }
-  }
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('user')
-    if (loggedUserJSON) {
-      const userParsed = JSON.parse(loggedUserJSON)
-      setUser(userParsed)
-      console.log(user)
-      blogService.setToken(userParsed.token)
-    }
-  }, [])
-
-  useEffect(() => {
-    dispatch(getBlogs())
-  }, [dispatch])
 
   return (
     <div>
