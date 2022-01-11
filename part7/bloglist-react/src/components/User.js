@@ -2,6 +2,7 @@ import React from 'react'
 import { getUsers } from '../reducers/usersReducer'
 import { Link, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import { ListGroup, ListGroupItem } from 'react-bootstrap'
 
 const User = () => {
   const params = useParams()
@@ -18,12 +19,14 @@ const User = () => {
   return (
     <div key={user.id}>
       <h3>{user.name}</h3>
-      <h4>added blogs</h4>
-      <ul key={user.id}>
+      <br />
+      <h4>Added blogs</h4>
+      <br />
+      <ListGroup key={user.id}>
         {user.blogs.map((blog) =>
-          <><li key={blog.id}><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></li></>
+          <><ListGroupItem key={blog.id}><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></ListGroupItem></>
         )}
-      </ul>
+      </ListGroup>
     </div>
   )
 }

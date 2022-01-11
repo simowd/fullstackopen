@@ -4,6 +4,7 @@ import blogService from '../services/blogs'
 export const loadUser = () => {
   const loggedUserJSON = window.localStorage.getItem('user')
   if (loggedUserJSON) {
+    console.log('ingresa')
     const userParsed = JSON.parse(loggedUserJSON)
     blogService.setToken(userParsed.token)
     return {
@@ -11,7 +12,10 @@ export const loadUser = () => {
       data: userParsed
     }
   }
-  return null
+  return {
+    type:'DO_NOTHING',
+    data: 'nothing'
+  }
 }
 
 export const setUser = (username, password) => {

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { deleteBlog, likeBlog, newComment } from '../reducers/blogReducer'
 import { useHistory, useParams } from 'react-router-dom'
 import { getBlogs } from '../reducers/blogReducer'
+import { Button, ListGroup, ListGroupItem, FormGroup, Form, FormLabel, FormControl } from 'react-bootstrap'
 
 const Blog = () => {
   const dispatch = useDispatch()
@@ -36,26 +37,29 @@ const Blog = () => {
       <h3>{blog.title} by {blog.author}</h3>
       <a href={blog.url}>{blog.url}</a>
       <br />
-      likes <span id={`${blog.title}-likes`}>{blog.likes}</span> <button onClick={likeButtonBlog}>like</button>
+      likes <span id={`${blog.title}-likes`}>{blog.likes}</span> <Button onClick={likeButtonBlog}>like</Button>
       <br />
       added by: {blog.user.name}
       <br />
-      <button onClick={deleteButtonBlog}>remove</button>
+      <Button onClick={deleteButtonBlog}>remove</Button>
       <br />
       <br />
       <br />
-      <form onSubmit={addComment}>
-        <input type="text"
-          value={comment}
-          id="username"
-          onChange={({ target }) => setComment(target.value)} />
-        <button>add comment</button>
-      </form>
+      <Form onSubmit={addComment}>
+        <FormGroup>
+          <FormLabel>Add comment: </FormLabel>
+          <FormControl type="text"
+            value={comment}
+            id="username"
+            onChange={({ target }) => setComment(target.value)} />
+        </FormGroup>
+        <Button type="submit">add comment</Button>
+      </Form>
 
       <h4>comments</h4>
-      <ul>
-        {blog.comments.map(b => <li key={b}>{b}</li>)}
-      </ul>
+      <ListGroup>
+        {blog.comments.map(b => <ListGroupItem key={b}>{b}</ListGroupItem>)}
+      </ListGroup>
     </div>
   )
 }

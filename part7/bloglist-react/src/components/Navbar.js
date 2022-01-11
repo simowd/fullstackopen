@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { clearUser } from '../reducers/userReducer'
+import { Nav, NavItem, NavLink, Button } from 'react-bootstrap'
 
 const Navbar = ({ user }) => {
   const dispatch = useDispatch()
@@ -11,7 +12,7 @@ const Navbar = ({ user }) => {
   }
 
   const Navstyle = {
-    background: 'grey',
+    background: 'white',
     margin: '5px',
     padding: '10px'
   }
@@ -21,11 +22,17 @@ const Navbar = ({ user }) => {
   }
 
   return (
-    <div style={Navstyle}>
-      <Link to='/'><span style={Spacing}>blogs</span></Link>
-      <Link to='/users'><span style={Spacing}>users</span></Link>
-      <span style={Spacing}>{user.name} logged in <button onClick={logOut}>log out</button></span>
-    </div>
+    <Nav style={Navstyle}>
+      <NavItem>
+        <NavLink as={Link} to='/'>Blogs</NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink as={Link} to='/users'>Users</NavLink>
+      </NavItem>
+      <NavItem>
+        <span style={Spacing}>{user.name} logged in <Button onClick={logOut}>log out</Button></span>
+      </NavItem>
+    </Nav>
   )
 }
 

@@ -1,14 +1,15 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { Alert } from 'react-bootstrap'
 
 const Notification = () => {
   const notification = useSelector(state => state.notification)
 
   const renderNotification = () => {
     if (notification.status) {
-      return <div className="error">{notification.message}</div>
+      return <Alert variant="danger">{notification.message}</Alert>
     } else {
-      return <div className="success">{notification.message}</div>
+      return <Alert variant="success">{notification.message}</Alert>
     }
   }
 

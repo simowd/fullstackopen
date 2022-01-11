@@ -11,6 +11,7 @@ import Users from './components/Users'
 import User from './components/User'
 import Blog from './components/Blog'
 import Navbar from './components/Navbar'
+import { Container, Badge } from 'react-bootstrap'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
@@ -21,10 +22,10 @@ const App = () => {
 
   const loginForm = () => {
     return (
-      <div>
-        <h2>login</h2>
+      <Container>
+        <h2><Badge bg='primary'>LOGIN</Badge></h2>
         <LoginForm />
-      </div>
+      </Container>
     )
   }
 
@@ -38,19 +39,19 @@ const App = () => {
     }
 
     return (
-      <div>
-        <h2>blogs</h2>
+      <Container>
+        <h2>Blogs</h2>
         <Togglable buttonLabel='create new blog'>
           <NewBlogForm blogs={blogs} />
         </Togglable>
-        <div id='blogs'>
+        <Container id='blogs'>
           {
             blogs.map(blog =>
-              <div key={blog.id} style={containerStyle}> <Link to={`/blogs/${blog.id}`}> {blog.title} {blog.author} </Link> </div>
+              <Container key={blog.id} style={containerStyle}> <Link to={`/blogs/${blog.id}`}> {blog.title} {blog.author} </Link> </Container>
             )
           }
-        </div>
-      </div>
+        </Container>
+      </Container>
     )
   }
 
