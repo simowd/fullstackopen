@@ -39,6 +39,7 @@ const App = () => {
 
     return (
       <div>
+        <h2>blogs</h2>
         <Togglable buttonLabel='create new blog'>
           <NewBlogForm blogs={blogs} />
         </Togglable>
@@ -66,7 +67,6 @@ const App = () => {
       <Notification />
       {user === null && loginForm()}
       {user !== null && <Navbar user={user}/>}
-      <h2>blogs</h2>
       <Switch>
         <Route path='/blogs/:id'>
           {user !== null && <Blog />}

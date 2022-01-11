@@ -2,12 +2,18 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteBlog, likeBlog } from '../reducers/blogReducer'
 import { useHistory, useParams } from 'react-router-dom'
+import { getBlogs } from '../reducers/blogReducer'
 
 const Blog = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const params = useParams()
   const blog = useSelector(state => state.blogs.find((b) => b.id === params.id))
+
+  if (!blog) {
+    dispatch(getBlogs())
+    return null
+  }
 
   const likeButtonBlog = async () => {
     dispatch(likeBlog(blog))
@@ -28,6 +34,11 @@ const Blog = () => {
       added by: {blog.user.name}
       <br />
       <button onClick={deleteButtonBlog}>remove</button>
+
+      <h4>comments</h4>
+      <li>
+        {blog.comments.map(b => <ul key={b}>{b}</ul>)}
+      </li>
     </div>
   )
 }

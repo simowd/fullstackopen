@@ -70,7 +70,19 @@ blogsRouter.put('/:id', async (request, response) => {
 
 blogsRouter.post('/:id/comments', async (request, response) => {
     const id = request.params.id
-    
+
+    const user = request.user
+    const blog = await Blog.findById(id)
+
+    if (user.id.toString() === blog.user.toString()) {
+        const result = await Blog.findByIdAndRemove(id)
+        response.status(204).end()
+    }
+    else {
+        response.status(401).send({ error: "invalid user" })
+    }
+
+    response.status(400).end()
 })
 
 module.exports = blogsRouter
