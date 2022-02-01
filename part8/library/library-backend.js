@@ -1,5 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server')
 const { ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core')
+const { v4: uuidv4 } = require('uuid');
 
 let authors = [
   {
@@ -93,7 +94,7 @@ const typeDefs = gql`
   type Author {
     name: String!
     id: ID!
-    born: String!
+    born: String
     bookCount: Int!
   }
 
@@ -103,6 +104,15 @@ const typeDefs = gql`
     author: String!
     id: ID!
     genres: [String!]!
+  }
+
+  type Mutation {
+    addBook(
+      title: String!
+      published: Int!
+      author: String!
+      genres: [String!]!
+    ): Book
   }
 
   type Query {
@@ -117,18 +127,18 @@ const resolvers = {
   Query: {
     bookCount: () => books.length,
     authorCount: () => authors.length,
-    allBooks: function (root, args) {
+    allBooks: (root, args) => {
       let filteredBooks = [...books]
 
       if (args.author !== undefined) {
-        filteredBooks = filteredBooks.filter(function (book) {
+        filteredBooks = filteredBooks.filter((book) => {
           if (book.author === args.author)
             return book
         })
       }
-      
+
       if (args.genre !== undefined) {
-        filteredBooks = filteredBooks.filter(function (book) {
+        filteredBooks = filteredBooks.filter((book) => {
           for (const genre of book.genres) {
             if (genre === args.genre)
               return book
@@ -143,6 +153,33 @@ const resolvers = {
 
   Author: {
     bookCount: (root) => books.reduce((sum, book) => book.author === root.name ? sum + 1 : sum, 0)
+  },
+
+  Mutation: {
+    addBook: (root, args) => {
+      const authorExists = authors.find(author => author.toString().toLowerCase() === args.author.toString().toLowerCase())
+      if (authorExists === undefined){
+        const newAuthor = {
+          name: args.author,
+          id: uuidv4(),
+          born: null
+        }
+
+        authors.push(newAuthor)
+      }
+
+      const newBook = {
+        title: args.title,
+        published: args.published,
+        author: args.author,
+        id: uuidv4(),
+        genres: args.genres
+      }
+
+      books.push(newBook)
+
+      return newBook
+    }
   }
 }
 
