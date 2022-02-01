@@ -17,11 +17,11 @@ let authors = [
     id: "afa5b6f1-344d-11e9-a414-719c6709cf3e",
     born: 1821
   },
-  { 
+  {
     name: 'Joshua Kerievsky', // birthyear not known
     id: "afa5b6f2-344d-11e9-a414-719c6709cf3e",
   },
-  { 
+  {
     name: 'Sandi Metz', // birthyear not known
     id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
   },
@@ -65,7 +65,7 @@ let books = [
     author: 'Joshua Kerievsky',
     id: "afa5de01-344d-11e9-a414-719c6709cf3e",
     genres: ['refactoring', 'patterns']
-  },  
+  },
   {
     title: 'Practical Object-Oriented Design, An Agile Primer Using Ruby',
     published: 2012,
@@ -108,7 +108,7 @@ const typeDefs = gql`
   type Query {
     bookCount: Int!
     authorCount: Int!
-    allBooks (author: String): [Book!]!
+    allBooks (author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
   }
 `
@@ -117,7 +117,27 @@ const resolvers = {
   Query: {
     bookCount: () => books.length,
     authorCount: () => authors.length,
-    allBooks: (root, args) => args.author !== undefined ? books.filter(function (book) { if(book.author === args.author) return book }) : books,
+    allBooks: function (root, args) {
+      let filteredBooks = [...books]
+
+      if (args.author !== undefined) {
+        filteredBooks = filteredBooks.filter(function (book) {
+          if (book.author === args.author)
+            return book
+        })
+      }
+      
+      if (args.genre !== undefined) {
+        filteredBooks = filteredBooks.filter(function (book) {
+          for (const genre of book.genres) {
+            if (genre === args.genre)
+              return book
+          }
+        })
+      }
+
+      return filteredBooks
+    },
     allAuthors: () => authors
   },
 
@@ -129,8 +149,8 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-    plugins: [
-      ApolloServerPluginLandingPageGraphQLPlayground(),
+  plugins: [
+    ApolloServerPluginLandingPageGraphQLPlayground(),
   ],
 })
 
