@@ -1,10 +1,11 @@
-  
+
 import React, { useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { ALL_AUTHORS, UPDATE_AUTHOR } from '../helpers/queries'
+import Select from 'react-select'
 
 const Authors = (props) => {
-  const [name, setName] = useState('')
+  const [name, setName] = useState(null)
   const [born, setBorn] = useState('')
   const [changeAuthor] = useMutation(UPDATE_AUTHOR, {
     onError: (error) => {
@@ -20,7 +21,7 @@ const Authors = (props) => {
     return null
   }
 
-  if(query.loading){
+  if (query.loading) {
     return <div>loading...</div>
   }
 
@@ -30,7 +31,7 @@ const Authors = (props) => {
 
     let bornNumber = parseInt(born)
 
-    changeAuthor({ variables: { name, born: bornNumber } })
+    changeAuthor({ variables: { name: name.value, born: bornNumber } })
 
     setName('')
     setBorn('')
@@ -65,9 +66,10 @@ const Authors = (props) => {
       <form onSubmit={submit}>
         <div>
           name
-          <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
+          <Select
+            defaultValue={name}
+            onChange={setName}
+            options={authors.map(author => { return { value: author.name, label: author.name } })}
           />
         </div>
         <div>
