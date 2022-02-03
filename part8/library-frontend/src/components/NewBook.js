@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { useMutation } from '@apollo/client'
+import { ADD_BOOK } from '../helpers/queries'
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
@@ -6,6 +8,13 @@ const NewBook = (props) => {
   const [published, setPublished] = useState('')
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
+
+  const [createBook] = useMutation(ADD_BOOK, {
+    onError: (error) => {
+      console.log("Program has encountered an error")
+      console.error(error)
+    }
+  })
 
   if (!props.show) {
     return null
@@ -15,6 +24,8 @@ const NewBook = (props) => {
     event.preventDefault()
     
     console.log('add book...')
+    const publishedDate = parseInt(published)
+    createBook({variables: {title, author, published: publishedDate, genres}})
 
     setTitle('')
     setPublished('')
