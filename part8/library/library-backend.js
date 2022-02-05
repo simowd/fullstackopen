@@ -144,14 +144,14 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (root, args) => {
-      let filteredBooks = [...books]
-
+    bookCount: async () => await Book.find({}).length(),
+    authorCount: async () => await Author.find({}).length(),
+    allBooks: async (root, args) => {
+      let filteredBooks = await Book.find({}).populate('author')
+      
       if (args.author !== undefined) {
         filteredBooks = filteredBooks.filter((book) => {
-          if (book.author === args.author)
+          if (book.author.name === args.author)
             return book
         })
       }
@@ -164,21 +164,21 @@ const resolvers = {
           }
         })
       }
-
       return filteredBooks
     },
-    allAuthors: () => authors
+    allAuthors: async () => await Author.find({})
   },
 
   Author: {
-    bookCount: (root) => books.reduce((sum, book) => book.author === root.name ? sum + 1 : sum, 0)
+    bookCount: async (root) => {
+      const books = await Book.find({}).populate('author')
+      return books.reduce((sum, book) => book.author.name === root.name ? sum + 1 : sum, 0)}
   },
 
   Mutation: {
     addBook: async (root, args) => {
       let authorExists = await Author.findOne({name: args.authorName})
       if (authorExists === null){
-        console.log('Ingresa')
         const newAuthor = new Author({
           name: args.authorName,
           born: null
@@ -200,17 +200,15 @@ const resolvers = {
         throw new UserInputError(error.message)
       })
     },
-    editAuthor: (root, args) => {
-      const author = authors.find(author => author.name.toString().toLowerCase() === args.name.toString().toLowerCase())
+    editAuthor: async (root, args) => {
+      const author = await Author.findOne({name: args.name})
 
       if(!author){
         return null
       }
-
-      const updatedAuthor = {...author, born: args.setBornTo}
-      authors = authors.map( author => author.name === args.name ? updatedAuthor : author )
+      console.log(author)
+      const updatedAuthor = await Author.findByIdAndUpdate(author._id, {born: args.setBornTo})
       return updatedAuthor
-
     }
   }
 }
