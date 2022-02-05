@@ -14,7 +14,7 @@ const Authors = (props) => {
     }
   })
   const query = useQuery(ALL_AUTHORS, {
-    pollInterval: 500
+    pollInterval: 0
   })
 
   if (!props.show) {

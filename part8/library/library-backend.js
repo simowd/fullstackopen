@@ -1,6 +1,21 @@
 const { ApolloServer, gql } = require('apollo-server')
-const { ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core')
+const { ApolloServerPluginLandingPageGraphQLPlayground, UserInputError } = require('apollo-server-core')
 const { v4: uuidv4 } = require('uuid');
+const mongoose = require('mongoose')
+const Author = require('./models/Author')
+const Book = require('./models/Book')
+
+//Mongoose initilization
+
+const MONGODB_URI = 'mongodb+srv://user:user@cluster0.31ala.mongodb.net/library?retryWrites=true&w=majority'
+
+console.log('connecting to', MONGODB_URI)
+
+mongoose.connect(MONGODB_URI).then( () => {
+  console.log('connected to database')
+}).catch( (error) => {
+  console.log('error connection to MongoDB:', error.message)
+})
 
 let authors = [
   {
@@ -101,7 +116,7 @@ const typeDefs = gql`
   type Book {
     title: String!
     published: String!
-    author: String!
+    author: Author
     id: ID!
     genres: [String!]!
   }
@@ -110,7 +125,7 @@ const typeDefs = gql`
     addBook(
       title: String!
       published: Int!
-      author: String!
+      authorName: String!
       genres: [String!]!
     ): Book
     editAuthor(
@@ -160,29 +175,30 @@ const resolvers = {
   },
 
   Mutation: {
-    addBook: (root, args) => {
-      const authorExists = authors.find(author => author.toString().toLowerCase() === args.author.toString().toLowerCase())
-      if (authorExists === undefined){
-        const newAuthor = {
-          name: args.author,
-          id: uuidv4(),
+    addBook: async (root, args) => {
+      let authorExists = await Author.findOne({name: args.authorName})
+      if (authorExists === null){
+        console.log('Ingresa')
+        const newAuthor = new Author({
+          name: args.authorName,
           born: null
-        }
+        })
 
-        authors.push(newAuthor)
+        authorExists = await newAuthor.save().catch( error => {
+          throw new UserInputError(error.message)
+        })
       }
 
-      const newBook = {
+      const newBook = new Book({
         title: args.title,
         published: args.published,
-        author: args.author,
-        id: uuidv4(),
+        author: authorExists,
         genres: args.genres
-      }
+      })
 
-      books.push(newBook)
-
-      return newBook
+      newBook.save().catch( error => {
+        throw new UserInputError(error.message)
+      })
     },
     editAuthor: (root, args) => {
       const author = authors.find(author => author.name.toString().toLowerCase() === args.name.toString().toLowerCase())

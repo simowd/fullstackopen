@@ -4,7 +4,7 @@ import { ALL_BOOKS } from '../helpers/queries'
 
 const Books = (props) => {
   const query = useQuery(ALL_BOOKS, {
-    pollInterval: 2000
+    pollInterval: 0
   })
 
   if (!props.show) {
