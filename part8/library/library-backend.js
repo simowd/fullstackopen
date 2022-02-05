@@ -183,10 +183,14 @@ const resolvers = {
           name: args.authorName,
           born: null
         })
-
-        authorExists = await newAuthor.save().catch( error => {
-          throw new UserInputError(error.message)
-        })
+        try{
+          authorExists = await newAuthor.save()
+        }
+        catch (error) {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        }
       }
 
       const newBook = new Book({
@@ -196,9 +200,14 @@ const resolvers = {
         genres: args.genres
       })
 
-      newBook.save().catch( error => {
-        throw new UserInputError(error.message)
-      })
+      try{
+        await newBook.save()
+      }
+      catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
     },
     editAuthor: async (root, args) => {
       const author = await Author.findOne({name: args.name})
