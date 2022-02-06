@@ -18,6 +18,7 @@ const Books = (props) => {
   }
 
   const filterList = (genre) => {
+    query.refetch()
     if(genre === 'show all genres'){
       setBooks([])
     }
