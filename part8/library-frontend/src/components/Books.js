@@ -42,7 +42,6 @@ const Books = (props) => {
   }
 
   const listRender = () => {
-    console.log('enters')
     if(books.length === 0){
       return query.data.allBooks.map(a =>
         <tr key={a.title}>
