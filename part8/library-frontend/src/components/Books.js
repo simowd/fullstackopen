@@ -1,9 +1,15 @@
 import React, { useState } from 'react'
-import { useQuery } from '@apollo/client'
-import { ALL_BOOKS } from '../helpers/queries'
+import { useQuery, useSubscription } from '@apollo/client'
+import { ALL_BOOKS, BOOK_ADDED } from '../helpers/queries'
 
 const Books = (props) => {
   const [books, setBooks] = useState([])
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: (({subscriptionData}) => {
+      console.log(subscriptionData)
+      alert(`Book ${subscriptionData.data.bookAdded.title} added`)
+    })
+  })
   
   const query = useQuery(ALL_BOOKS, {
     pollInterval: 0
@@ -18,7 +24,7 @@ const Books = (props) => {
   }
 
   const filterList = (genre) => {
-    query.refetch()
+    //query.refetch()
     if(genre === 'show all genres'){
       setBooks([])
     }
