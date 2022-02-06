@@ -27,6 +27,8 @@ mongoose.connect(MONGODB_URI).then(() => {
   console.log('error connection to MongoDB:', error.message)
 })
 
+mongoose.set('debug', true);
+
 const typeDefs = gql`
   type User {
     username: String!
@@ -116,7 +118,9 @@ const resolvers = {
       }
       return filteredBooks
     },
-    allAuthors: async () => await Author.find({}),
+    allAuthors: async () => {
+      return await Author.find({})
+    },
     me: (root, args, context) => {
       return context.currentUser
     }
@@ -124,8 +128,7 @@ const resolvers = {
 
   Author: {
     bookCount: async (root) => {
-      const books = await Book.find({}).populate('author')
-      return books.reduce((sum, book) => book.author.name === root.name ? sum + 1 : sum, 0)
+      return root.books.length
     }
   },
 
@@ -160,6 +163,7 @@ const resolvers = {
 
       try {
         await newBook.save()
+        await Author.findByIdAndUpdate(authorExists._id, {books: authorExists.books.concat(newBook)})
       }
       catch (error) {
         throw new UserInputError(error.message, {
@@ -241,7 +245,7 @@ async function startApolloServer(typeDefs, resolvers) {
     app,
     path: '/'
   })
-  
+
   const subscriptionServer = SubscriptionServer.create({
     schema,
     execute,
@@ -251,7 +255,7 @@ async function startApolloServer(typeDefs, resolvers) {
     path: server.graphqlPath
   })
 
-  
+
 
   await new Promise(resolve => httpServer.listen({ port: 4000 }, resolve))
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
