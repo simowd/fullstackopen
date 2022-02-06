@@ -1,12 +1,18 @@
-const { ApolloServer, gql } = require('apollo-server')
-const { ApolloServerPluginLandingPageGraphQLPlayground, UserInputError } = require('apollo-server-core')
-const { v4: uuidv4 } = require('uuid');
+const express = require('express')
+const http = require('http')
+const { ApolloServer, gql } = require('apollo-server-express')
+const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground, UserInputError } = require('apollo-server-core')
+const { execute, subscribe } = require('graphql')
+const { SubscriptionServer } = require('subscriptions-transport-ws')
+const { makeExecutableSchema } = require('@graphql-tools/schema')
 const mongoose = require('mongoose')
 const Author = require('./models/Author')
-const Book = require('./models/Book');
-const User = require('./models/User');
+const Book = require('./models/Book')
+const User = require('./models/User')
 const jwt = require('jsonwebtoken')
+const { PubSub } = require('graphql-subscriptions')
 
+const pubsub = new PubSub()
 const JWT_SECRET = 'SUPERSECRETHASH'
 
 //Mongoose initilization
@@ -68,6 +74,10 @@ const typeDefs = gql`
     ): Token
   }
 
+  type Subscription {
+    bookAdded: Book!
+  }
+
   type Query {
     bookCount: Int!
     authorCount: Int!
@@ -78,6 +88,11 @@ const typeDefs = gql`
 `
 
 const resolvers = {
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
+    }
+  },
   Query: {
     bookCount: async () => await Book.find({}).length(),
     authorCount: async () => await Author.find({}).length(),
@@ -151,6 +166,9 @@ const resolvers = {
           invalidArgs: args,
         })
       }
+
+      pubsub.publish('BOOK_ADDED', { bookAdded: newBook })
+      return newBook
     },
     editAuthor: async (root, args, { currentUser }) => {
       if (!currentUser) {
@@ -167,11 +185,11 @@ const resolvers = {
       return updatedAuthor
     },
     createUser: async (root, args) => {
-      const user = new User({username: args.username, favoriteGenre: args.favoriteGenre})
-      try{
+      const user = new User({ username: args.username, favoriteGenre: args.favoriteGenre })
+      try {
         await user.save()
       }
-      catch(error){ 
+      catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
@@ -179,39 +197,65 @@ const resolvers = {
     },
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username })
-  
-      if ( !user || args.password !== 'secret' ) {
+
+      if (!user || args.password !== 'secret') {
         throw new UserInputError("wrong credentials")
       }
-  
+
       const userForToken = {
         username: user.username,
         id: user._id,
       }
-  
+
       return { value: jwt.sign(userForToken, JWT_SECRET) }
     },
   }
 }
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  plugins: [
-    ApolloServerPluginLandingPageGraphQLPlayground(),
-  ],
-  context: async ({ req }) => {
-    const auth = req ? req.headers.authorization : null
-    if (auth && auth.toLowerCase().startsWith('bearer ')) {
-      const decodedToken = jwt.verify(
-        auth.substring(7), JWT_SECRET
-      )
-      const currentUser = await User.findById(decodedToken.id).populate('friends')
-      return { currentUser }
-    }
-  }
-})
+async function startApolloServer(typeDefs, resolvers) {
+  const app = express()
+  const httpServer = http.createServer(app)
 
-server.listen().then(({ url }) => {
-  console.log(`Server ready at ${url}`)
-})
+  const schema = makeExecutableSchema({ typeDefs, resolvers })
+
+  const server = new ApolloServer({
+    schema,
+    plugins: [
+      ApolloServerPluginLandingPageGraphQLPlayground(),
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+    ],
+    context: async ({ req }) => {
+      const auth = req ? req.headers.authorization : null
+      if (auth && auth.toLowerCase().startsWith('bearer ')) {
+        const decodedToken = jwt.verify(
+          auth.substring(7), JWT_SECRET
+        )
+        const currentUser = await User.findById(decodedToken.id).populate('friends')
+        return { currentUser }
+      }
+    }
+  })
+
+  await server.start()
+  server.applyMiddleware({
+    app,
+    path: '/'
+  })
+  
+  const subscriptionServer = SubscriptionServer.create({
+    schema,
+    execute,
+    subscribe
+  }, {
+    server: httpServer,
+    path: server.graphqlPath
+  })
+
+  
+
+  await new Promise(resolve => httpServer.listen({ port: 4000 }, resolve))
+  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+
+}
+
+startApolloServer(typeDefs, resolvers)
