@@ -1,19 +1,29 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useQuery, useSubscription } from '@apollo/client'
 import { ALL_BOOKS, BOOK_ADDED } from '../helpers/queries'
 
 const Books = (props) => {
+  const [constantBooks, setConstantBooks] = useState([])
   const [books, setBooks] = useState([])
   useSubscription(BOOK_ADDED, {
-    onSubscriptionData: (({subscriptionData}) => {
+    onSubscriptionData: (({ subscriptionData }) => {
       console.log(subscriptionData)
-      alert(`Book ${subscriptionData.data.bookAdded.title} added`)
+      //alert(`Book ${subscriptionData.data.bookAdded.title} added`)
+      setConstantBooks(constantBooks.concat(subscriptionData.data.bookAdded))
     })
   })
-  
+
   const query = useQuery(ALL_BOOKS, {
     pollInterval: 0
   })
+
+  useEffect(() => {
+    if (!query.loading) {
+      setConstantBooks(query.data.allBooks)
+    }
+  }, [query.loading])
+
+
 
   if (!props.show) {
     return null
@@ -25,17 +35,17 @@ const Books = (props) => {
 
   const filterList = (genre) => {
     //query.refetch()
-    if(genre === 'show all genres'){
+    if (genre === 'show all genres') {
       setBooks([])
     }
-    else{
-      const newBooks = query.data.allBooks.filter((book) => book.genres.includes(genre))
+    else {
+      const newBooks = constantBooks.filter((book) => book.genres.includes(genre))
       setBooks(newBooks)
     }
   }
 
   const genreButtons = () => {
-    const filteredGenres = query.data.allBooks.map(book => book.genres).reduce((list, genres) => {
+    const filteredGenres = constantBooks.map(book => book.genres).reduce((list, genres) => {
       for (const genre of genres) {
         if (!list.find(element => genre.toString().toLowerCase() === element.toString().toLowerCase())) {
           list = list.concat(genre)
@@ -49,8 +59,8 @@ const Books = (props) => {
   }
 
   const listRender = () => {
-    if(books.length === 0){
-      return query.data.allBooks.map(a =>
+    if (books.length === 0) {
+      return constantBooks.map(a =>
         <tr key={a.title}>
           <td>{a.title}</td>
           <td>{a.author.name}</td>
@@ -58,7 +68,7 @@ const Books = (props) => {
         </tr>
       )
     }
-    else{
+    else {
       return books.map(a =>
         <tr key={a.title}>
           <td>{a.title}</td>
