@@ -4,8 +4,15 @@
   "description": "First 7 exercises fullstackopen",
   "main": "index.js",
   "scripts": {
+    "calculateBmi": "ts-node bmiCalculator.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^17.0.15",
+    "ts-node": "^10.5.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.5"
+  }
 }
