@@ -8,6 +8,36 @@ interface Result {
     average: number
 }
 
+interface Training {
+    hoursTrained: Array<number>,
+    target: number
+}
+
+const verifyArgs = (args: Array<string>): Training => {
+    if (args.length < 4) throw new Error('Not enough arguments');
+
+    if (isNaN(Number(args[2]))){
+        throw new Error("Target value is not a number");
+    }
+
+    let hoursTrained: Array<number> = [];
+
+    for (let i = 3; i < args.length; i++){
+        if(!isNaN(Number(args[i]))){
+            hoursTrained = hoursTrained.concat(Number(args[i]));
+        }
+        else{
+            throw new Error(`Value for day ${i} is not a number`);
+        }
+    }
+    
+    return {
+        hoursTrained,
+        target: Number(args[2])
+    }
+
+}
+
 const calculateExercises = (hoursTrained: Array<number>, target: number): Result => {
     const sumHoursTrained: number = hoursTrained.reduce((sum, hours) => sum + hours, 0)
     const average: number = sumHoursTrained/hoursTrained.length
@@ -39,4 +69,12 @@ const calculateExercises = (hoursTrained: Array<number>, target: number): Result
     }
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+try {
+    const { hoursTrained, target } = verifyArgs(process.argv)
+    console.log(calculateExercises(hoursTrained, target))
+}
+catch (error: unknown){
+    if (error instanceof Error){
+        console.log("Error: ", error.message)
+    }
+}
