@@ -34,28 +34,27 @@ const verifyArgs = (args: Array<string>): Training => {
     return {
         hoursTrained,
         target: Number(args[2])
-    }
-
-}
+    };
+};
 
 const calculateExercises = (hoursTrained: Array<number>, target: number): Result => {
-    const sumHoursTrained: number = hoursTrained.reduce((sum, hours) => sum + hours, 0)
-    const average: number = sumHoursTrained/hoursTrained.length
+    const sumHoursTrained: number = hoursTrained.reduce((sum, hours) => sum + hours, 0);
+    const average: number = sumHoursTrained/hoursTrained.length;
 
-    let rating: number = 0
-    let ratingDescription: string = ''
+    let rating = 0;
+    let ratingDescription = '';
 
     if(average > target + 1){
-        ratingDescription = 'keep it up'
-        rating = 3
+        ratingDescription = 'keep it up';
+        rating = 3;
     }
     else if (average < target + 1 && average > target -1){
-        ratingDescription = 'not too bad but could be better'
-        rating = 2
+        ratingDescription = 'not too bad but could be better';
+        rating = 2;
     }
     else{
-        ratingDescription = 'you should improve',
-        rating = 1
+        ratingDescription = 'you should improve';
+        rating = 1;
     }
 
     return {
@@ -66,15 +65,15 @@ const calculateExercises = (hoursTrained: Array<number>, target: number): Result
         ratingDescription: ratingDescription,
         target: target,
         average: average
-    }
-}
+    };
+};
 
 try {
-    const { hoursTrained, target } = verifyArgs(process.argv)
-    console.log(calculateExercises(hoursTrained, target))
+    const { hoursTrained, target } = verifyArgs(process.argv);
+    console.log(calculateExercises(hoursTrained, target));
 }
 catch (error: unknown){
     if (error instanceof Error){
-        console.log("Error: ", error.message)
+        console.log("Error: ", error.message);
     }
 }
