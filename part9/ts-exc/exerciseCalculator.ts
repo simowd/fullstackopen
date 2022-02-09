@@ -77,3 +77,5 @@ catch (error: unknown){
         console.log("Error: ", error.message);
     }
 }
+
+export default calculateExercises;

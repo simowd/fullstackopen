@@ -1,6 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import express from 'express';
 import calculateBmi from './bmiCalculator';
+import calculateExercises from './exerciseCalculator';
 const app = express();
+
+app.use(express.json());
 
 app.get('/hello', (_req, res) => {
     res.send('Hello Full Stack!');
@@ -24,6 +29,29 @@ app.get('/bmi', (req, res) => {
     }
     catch (error: unknown){
         res.sendStatus(500);
+    }
+});
+
+app.post('/exercises', (req, res) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any    
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const body = req.body;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if(body){
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        if(!body.daily_exercises || !body.target){
+            res.json({
+                error: 'missing content'
+            });
+        }
+
+        res.json(calculateExercises(body.daily_exercises, body.target));
+
+    }
+    else {
+        res.json({
+            error: 'missing content'
+        });
     }
 });
 
