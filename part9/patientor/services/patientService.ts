@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import patientsData from '../data/patients';
 import { NewPatient, NonSensitivePatientEntry, PatientEntry } from '../types';
 import {v1 as uuid} from 'uuid';
@@ -25,4 +26,14 @@ const addPatient = (newPatient: NewPatient): PatientEntry => {
     return patient;
 };
 
-export default { getPatients, getNonSensitivePatients, addPatient };
+const getPatientById = (id: string): PatientEntry => {
+    if(patientsData.find((patient) => patient.id === id)){
+        const patient = patientsData.find((patient) => patient.id === id); 
+        return patient as PatientEntry;
+    }
+    else{
+        throw new Error('id not existant');
+    }  
+};
+
+export default { getPatients, getNonSensitivePatients, addPatient, getPatientById };

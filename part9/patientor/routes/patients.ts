@@ -9,14 +9,27 @@ router.get('/', (_req, res) => {
 });
 
 router.post('/', (req, res) => {
-    try{
+    try {
         const newPatient = toNewPatient(req.body);
         const addPatient = patientService.addPatient(newPatient);
         res.json(addPatient);
     }
     catch (error: unknown) {
         let errorMessage = 'Something went wrong';
-        if(error instanceof Error){
+        if (error instanceof Error) {
+            errorMessage += ' Error: ' + error.message;
+        }
+        res.status(400).send(errorMessage);
+    }
+});
+
+router.get('/:id', (req, res) => {
+    try {
+        res.send(patientService.getPatientById(req.params.id));
+    }
+    catch (error: unknown) {
+        let errorMessage = 'Something went wrong';
+        if (error instanceof Error) {
             errorMessage += ' Error: ' + error.message;
         }
         res.status(400).send(errorMessage);
