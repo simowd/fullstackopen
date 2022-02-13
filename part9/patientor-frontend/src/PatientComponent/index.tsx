@@ -7,8 +7,6 @@ import { Patient, PatientLink } from "../types";
 
 const PatientComponent = (): JSX.Element => {
     const { id } = useParams<PatientLink>();
-    //const [{ patients }] = useStateValue();
-    //const history = useHistory();
     const [patient, setPatient] = React.useState<Patient>();
     React.useEffect(() => {
         if (!patient) {
