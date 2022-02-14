@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { Icon } from "semantic-ui-react";
 import { apiBaseUrl } from "../constants";
 import { Patient, PatientLink } from "../types";
+import EntriesContainer from "./EntriesContainer";
 
 const PatientComponent = (): JSX.Element => {
     const { id } = useParams<PatientLink>();
@@ -18,7 +19,7 @@ const PatientComponent = (): JSX.Element => {
                         `${apiBaseUrl}/patients/${id}`
                     );
                     setPatient(patientData);
-                    console.log(patient);
+
                 } catch (e) {
                     console.error(e);
                 }
@@ -26,7 +27,7 @@ const PatientComponent = (): JSX.Element => {
             void fetchPatientList();
         }
     });
-
+    console.log(patient);
     const renderPatient = () => {
         if (patient) {
             return (
@@ -34,6 +35,7 @@ const PatientComponent = (): JSX.Element => {
                     <h2>{patient.name} <Icon name={patient.gender === 'male' ? 'mars' : (patient.gender === 'female' ? 'venus' : 'neuter')} /> </h2>
                     <p>ssn: {patient.ssn}</p>
                     <p>occupation: {patient.occupation}</p>
+                    <EntriesContainer entries={patient.entries}/>
                 </>
             );
         }

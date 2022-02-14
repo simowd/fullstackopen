@@ -51,7 +51,8 @@ interface HospitalEntry extends BaseEntry {
 
 interface OccupationalHealthcareEntry extends BaseEntry {
     type: "OccupationalHealthcare";
-    sickLeave: SickLeave;
+    employerName: string;
+    sickLeave?: SickLeave;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
