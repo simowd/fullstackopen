@@ -27,7 +27,7 @@ const PatientComponent = (): JSX.Element => {
             void fetchPatientList();
         }
     });
-    console.log(patient);
+    
     const renderPatient = () => {
         if (patient) {
             return (
