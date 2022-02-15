@@ -1,17 +1,17 @@
 import React from 'react';
 import { Modal, Segment } from 'semantic-ui-react';
 import { Diagnosis } from '../types';
-import AddHealthCheckEntryForm, { HealthCheckEntryFormValues } from './AddHealthCheckEntryForm';
+import AddHospitalEntryForm, { HospitalEntryFormValues } from './AddHospitalEntryForm';
 
 interface Props {
   modalOpen: boolean;
   onClose: () => void;
-  onSubmit: (values: HealthCheckEntryFormValues) => void;
+  onSubmit: (values: HospitalEntryFormValues) => void;
   error?: string;
   diagnoses: Array<Diagnosis> | undefined;
 }
 
-const AddEntryModal = ({ modalOpen, onClose, onSubmit, error, diagnoses }: Props) => {
+const AddHospitalEntryModal = ({ modalOpen, onClose, onSubmit, error, diagnoses }: Props) => {
   if(!diagnoses){
     return <></>;
   }
@@ -21,10 +21,10 @@ const AddEntryModal = ({ modalOpen, onClose, onSubmit, error, diagnoses }: Props
       <Modal.Header>Add a new Entry</Modal.Header>
       <Modal.Content>
         {error && <Segment inverted color="red">{`Error: ${error}`}</Segment>}
-        <AddHealthCheckEntryForm onSubmit={onSubmit} onCancel={onClose} diagnoses={diagnoses}/>
+        <AddHospitalEntryForm onSubmit={onSubmit} onCancel={onClose} diagnoses={diagnoses}/>
       </Modal.Content>
     </Modal>
   </>
   );
 };
-export default AddEntryModal;
+export default AddHospitalEntryModal;
