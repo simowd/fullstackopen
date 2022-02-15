@@ -3,22 +3,22 @@ import { Grid, Button } from "semantic-ui-react";
 import { Field, Formik, Form } from "formik";
 
 import { TextField } from "./FormField";
-import { Diagnosis, HospitalEntry } from "../types";
+import { Diagnosis, OccupationalHealthcareEntry } from "../types";
 import { DiagnosisSelection } from "../AddPatientModal/FormField";
 
 /*
  * use type Patient, but omit id and entries,
  * because those are irrelevant for new patient object.
  */
-export type HospitalEntryFormValues = Omit<HospitalEntry, "id" | "type">;
+export type OccupationalHealthcareEntryFormValues = Omit<OccupationalHealthcareEntry, "id" | "type">;
 
 interface Props {
-  onSubmit: (values: HospitalEntryFormValues) => void;
+  onSubmit: (values: OccupationalHealthcareEntryFormValues) => void;
   onCancel: () => void;
   diagnoses: Array<Diagnosis> | undefined;
 }
 
-export const AddHospitalEntryForm = ({ onSubmit, onCancel, diagnoses }: Props) => {
+export const AddOccupationalHealthCareForm = ({ onSubmit, onCancel, diagnoses }: Props) => {
   if (!diagnoses) {
     return <></>;
   }
@@ -29,9 +29,10 @@ export const AddHospitalEntryForm = ({ onSubmit, onCancel, diagnoses }: Props) =
         date: "",
         specialist: "",
         diagnosisCodes: [],
-        discharge: {
-          date: "",
-          criteria: ""
+        employerName: "",
+        sickLeave: {
+          startDate: "",
+          endDate: ""
         }
       }}
       onSubmit={onSubmit}
@@ -47,11 +48,8 @@ export const AddHospitalEntryForm = ({ onSubmit, onCancel, diagnoses }: Props) =
         if (!values.specialist) {
           errors.specialist = requiredError;
         }
-        if (!values.discharge.date) {
-          errors.discharge = requiredError;
-        }
-        if (!values.discharge.criteria) {
-          errors.discharge = requiredError;
+        if (!values.employerName) {
+          errors.employerName = requiredError;
         }
         return errors;
       }}
@@ -85,16 +83,23 @@ export const AddHospitalEntryForm = ({ onSubmit, onCancel, diagnoses }: Props) =
             />
 
             <Field
-              label="Discharge Date"
-              placeholder="YYYY-MM-DD"
-              name="discharge.date"
+              label="Employer Name"
+              placeholder="John Doe"
+              name="employerName"
               component={TextField}
             />
 
             <Field
-              label="Discharge Criteria"
-              placeholder="Description"
-              name="discharge.criteria"
+              label="Sick Leave Start Date"
+              placeholder="YYYY-MM-DD"
+              name="sickLeave.startDate"
+              component={TextField}
+            />
+
+            <Field
+              label="Sick Leave End Date"
+              placeholder="YYYY-MM-DD"
+              name="sickLeave.endDate"
               component={TextField}
             />
 
@@ -122,4 +127,4 @@ export const AddHospitalEntryForm = ({ onSubmit, onCancel, diagnoses }: Props) =
   );
 };
 
-export default AddHospitalEntryForm;
+export default AddOccupationalHealthCareForm;

@@ -6,6 +6,8 @@ import AddHealthCheckEntryModal from "../AddHealthCheckEntryModal";
 import { HealthCheckEntryFormValues } from "../AddHealthCheckEntryModal/AddHealthCheckEntryForm";
 import AddHospitalEntryModal from "../AddHospitalEntryModal";
 import { HospitalEntryFormValues } from "../AddHospitalEntryModal/AddHospitalEntryForm";
+import AddOccupationalHealthcareEntryModal from "../AddOccupationalHealthCareEntryModal ";
+import { OccupationalHealthcareEntryFormValues } from "../AddOccupationalHealthCareEntryModal /AddOccupationalHealthCareForm";
 import { apiBaseUrl } from "../constants";
 import { Diagnosis, Entry, Patient, PatientLink } from "../types";
 import EntriesContainer from "./EntriesContainer";
@@ -15,6 +17,7 @@ const PatientComponent = (): JSX.Element => {
     const [patient, setPatient] = React.useState<Patient>();
     const [healthCheckModalOpen, sethealthCheckModalOpen] = React.useState<boolean>(false);
     const [hospitalModalOpen, setHospitalModalOpen] = React.useState<boolean>(false);
+    const [occupationalHealthcareModalOpen, setOccupationalHealthcareModalOpen] = React.useState<boolean>(false);
     const [error, setError] = React.useState<string | undefined>();
 
     const openHealthCheckModal = (): void => sethealthCheckModalOpen(true);
@@ -28,6 +31,13 @@ const PatientComponent = (): JSX.Element => {
 
     const closeHospitalModal = (): void => {
         setHospitalModalOpen(false);
+        setError(undefined);
+    };
+
+    const openOccupationalHealthcareModal = (): void => setOccupationalHealthcareModalOpen(true);
+
+    const closeOccupationalHealthcareModal = (): void => {
+        setOccupationalHealthcareModalOpen(false);
         setError(undefined);
     };
 
@@ -93,6 +103,27 @@ const PatientComponent = (): JSX.Element => {
         }
     };
 
+    const submitOccupationalHealthcare = async (values: OccupationalHealthcareEntryFormValues) => {
+        try {
+            const { data: newEntry } = await axios.post<Entry>(
+                `${apiBaseUrl}/patients/${id}/entries`,
+                {...values, type: "OccupationalHealthcare"}
+            );
+            if (patient) {
+                const updated = { ...patient };
+                if (updated.entries) {
+                    updated.entries.push(newEntry);
+                }
+                setPatient(updated);
+            }
+
+            closeHealthCheckModal();
+        } catch (e: any) {
+            console.error(e.response?.data || 'Unknown Error');
+            setError(e.response?.data || 'Unknown error');
+        }
+    };
+
     React.useEffect(() => {
         if (!patient) {
             void axios.get<void>(`${apiBaseUrl}/ping`);
@@ -136,6 +167,14 @@ const PatientComponent = (): JSX.Element => {
                         diagnoses={diagnoses}
                     />
                     <Button onClick={() => openHospitalModal()}>Add New Hospital Entry</Button>
+                    <AddOccupationalHealthcareEntryModal
+                        modalOpen={occupationalHealthcareModalOpen}
+                        onSubmit={submitOccupationalHealthcare}
+                        error={error}
+                        onClose={closeOccupationalHealthcareModal}
+                        diagnoses={diagnoses}
+                    />
+                    <Button onClick={() => openOccupationalHealthcareModal()}>Add New Occupational Healthcare Entry</Button>
                 </>
             );
         }
