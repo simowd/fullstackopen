@@ -1,33 +1,12 @@
-import axios from "axios";
 import React from "react";
 import { Diagnosis, Entry } from "../types";
-import { apiBaseUrl } from "../constants";
 import HospitalEntry from "./HospitalEntry";
 import OccupationalHealthcareEntry from "./OccupationalHealthcareEntry";
 import HealthCheckEntry from "./HealthCheckEntry";
 
-const EntriesContainer = ({ entries }: { entries: Array<Entry> | undefined }): JSX.Element => {
-    const [diagnoses, setDiagnoses] = React.useState<Array<Diagnosis>>();
-    React.useEffect(() => {
-        if (!diagnoses) {
-            void axios.get<void>(`${apiBaseUrl}/ping`);
+const EntriesContainer = ({ entries, diagnoses }: { entries: Array<Entry> | undefined,  diagnoses: Array<Diagnosis> | undefined}): JSX.Element => {
 
-            const fetchDiagnoseList = async () => {
-                try {
-                    const { data: diagnosesData } = await axios.get<Array<Diagnosis>>(
-                        `${apiBaseUrl}/diagnoses`
-                    );
-                    setDiagnoses(diagnosesData);
-
-                } catch (e) {
-                    console.error(e);
-                }
-            };
-            void fetchDiagnoseList();
-        }
-    });
-
-    if (!entries) {
+    if (!entries || !diagnoses) {
         return <></>;
     }
 
